@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Neiram — retours des utilisateurs</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  label { display: block; font-size: 13px; color: var(--doux); margin: 10px 0 4px; }
+  input, select, textarea { width: 100%; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--bord); background: var(--fond); color: var(--texte); font: inherit; }
+  button { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--or); background: transparent; color: var(--or); font: inherit; cursor: pointer; }
+  button.plein { background: var(--or); color: #111; font-weight: 600; }
+  .ligne { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .retour { border-bottom: 1px solid var(--bord); padding: 10px 0; }
+  .retour.lu { opacity: .55; }
+  .meta { font-size: 12px; color: var(--doux); }
+  .texte { white-space: pre-wrap; margin: 4px 0 6px; }
+  .filtres button[aria-pressed="true"] { background: var(--or); color: #111; }
+  #message { min-height: 1.5em; color: var(--doux); }
+</style>
+</head>
+<body>
+<main>
+<h1>Retours des utilisateurs</h1>
+<p class="maj">Page privée : rien ne s'affiche sans le secret d'administration du Worker. Le secret reste dans cet onglet (effacé à sa fermeture).</p>
+
+<div class="carte" id="connexion">
+  <label for="adresse">Adresse du Worker (variable GitHub <code>VITE_PROXY_URL</code>)</label>
+  <input id="adresse" placeholder="https://neiram-public-proxy.….workers.dev" autocomplete="off">
+  <label for="secret">Secret d'administration (<code>ADMIN_SECRET</code>)</label>
+  <input id="secret" type="password" autocomplete="off">
+  <p class="ligne" style="margin-top:12px"><button class="plein" id="charger">Afficher les retours</button></p>
+</div>
+<p id="message" role="status"></p>
+
+<section id="contenu" hidden>
+  <h2>Messages</h2>
+  <p class="ligne filtres">
+    <button data-filtre="tous" aria-pressed="true">Tous</button>
+    <button data-filtre="idee" aria-pressed="false">💡 Idées</button>
+    <button data-filtre="amelioration" aria-pressed="false">🔧 Améliorations</button>
+    <button data-filtre="probleme" aria-pressed="false">🐞 Problèmes</button>
+    <button data-filtre="non-lus" aria-pressed="false">Non lus</button>
+  </p>
+  <div id="retours"></div>
+
+  <h2>Codes des stories (bonus « Suis Coach Neiram »)</h2>
+  <p class="meta">Publie le code dans une story Instagram (ou TikTok). Valable 48 h par défaut. Chaque personne n'est récompensée qu'une fois par réseau : 7 jours de Premium, ou le tarif fidèle -20 % si elle est déjà abonnée.</p>
+  <p class="ligne">
+    <select id="c-reseau" style="width:auto"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select>
+    <input id="c-code" placeholder="Code (vide = généré)" style="width:auto;flex:1">
+    <input id="c-heures" type="number" value="48" style="width:90px" title="Durée en heures">
+    <button class="plein" id="c-creer">Créer le code</button>
+  </p>
+  <div id="codes"></div>
+
+  <h2>Communauté : signalements</h2>
+  <p class="meta">Un profil signalé par 3 personnes est masqué automatiquement en attendant ta décision.</p>
+  <div id="signalements"></div>
+  <p class="meta" id="masques"></p>
+
+  <h2>Prochaines mises à jour (votées dans l'app)</h2>
+  <table>
+    <thead><tr><th>Idée</th><th>Statut</th><th>Votes</th><th></th></tr></thead>
+    <tbody id="idees"></tbody>
+  </table>
+
+  <div class="carte">
+    <h3 id="titre-form">Ajouter une idée</h3>
+    <label for="i-id">Identifiant (minuscules, chiffres, tirets — ne change plus ensuite)</label>
+    <input id="i-id" placeholder="mode-clair">
+    <label for="i-titre">Titre (80 caractères)</label>
+    <input id="i-titre" maxlength="80">
+    <label for="i-detail">Détail (300 caractères)</label>
+    <textarea id="i-detail" rows="2" maxlength="300"></textarea>
+    <label for="i-statut">Statut</label>
+    <select id="i-statut"><option value="a-venir">À l'étude</option><option value="en-cours">En cours</option><option value="fait">Disponible</option></select>
+    <label for="i-ordre">Ordre (plus petit = plus haut à votes égaux)</label>
+    <input id="i-ordre" type="number" value="100">
+    <p class="ligne" style="margin-top:12px"><button class="plein" id="enregistrer">Enregistrer l'idée</button><button id="vider">Vider</button></p>
+  </div>
+</section>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var TYPES = { idee: "💡 Idée", amelioration: "🔧 Amélioration", probleme: "🐞 Problème" };
+  var STATUTS = { "a-venir": "À l'étude", "en-cours": "En cours", fait: "Disponible" };
+  var donnees = { retours: [], idees: [] };
+  var filtre = "tous";
+
+  try { $("adresse").value = localStorage.getItem("neiram_admin_worker") || ""; } catch (e) {}
+  try { $("secret").value = sessionStorage.getItem("neiram_admin_secret") || ""; } catch (e) {}
+
+  function message(t) { $("message").textContent = t || ""; }
+
+  function appeler(corps) {
+    var adresse = $("adresse").value.trim().replace(/\/+$/, "");
+    var secret = $("secret").value;
+    try { localStorage.setItem("neiram_admin_worker", adresse); sessionStorage.setItem("neiram_admin_secret", secret); } catch (e) {}
+    return fetch(adresse + "/admin/retours", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + secret },
+      body: JSON.stringify(corps)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.ok === false) throw new Error(r.status === 401 ? "Secret refusé." : r.status === 404 ? "Administration désactivée (ADMIN_SECRET absent ou trop court)." : (j.error || "Erreur " + r.status));
+        return j;
+      });
+    });
+  }
+
+  function el(tag, attrs, enfants) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (k === "texte") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); });
+    (enfants || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+
+  function afficher() {
+    var liste = $("retours");
+    liste.textContent = "";
+    var retours = donnees.retours.filter(function (r) {
+      return filtre === "tous" || (filtre === "non-lus" ? !r.lu : r.type === filtre);
+    });
+    if (!retours.length) liste.appendChild(el("p", { class: "meta", texte: "Aucun message." }));
+    retours.forEach(function (r) {
+      var lu = el("button", { texte: r.lu ? "Lu" : "Marquer lu" });
+      lu.disabled = !!r.lu;
+      lu.onclick = function () { appeler({ action: "marquer-lu", id: r.id }).then(charger).catch(function (e) { message(e.message); }); };
+      var sup = el("button", { texte: "Supprimer" });
+      sup.onclick = function () { if (confirm("Supprimer ce message ?")) appeler({ action: "supprimer-retour", id: r.id }).then(charger).catch(function (e) { message(e.message); }); };
+      var meta = (TYPES[r.type] || r.type) + " · " + new Date(r.cree_le).toLocaleString("fr-FR") + (r.ecran ? " · écran " + r.ecran : "") + (r.version ? " · v" + r.version : "");
+      liste.appendChild(el("div", { class: "retour" + (r.lu ? " lu" : "") }, [
+        el("div", { class: "meta", texte: meta }),
+        el("div", { class: "texte", texte: r.texte }),
+        el("div", { class: "ligne" }, [lu, sup])
+      ]));
+    });
+
+    var corps = $("idees");
+    corps.textContent = "";
+    donnees.idees.forEach(function (i) {
+      var modifier = el("button", { texte: "Modifier" });
+      modifier.onclick = function () {
+        $("i-id").value = i.id; $("i-titre").value = i.titre; $("i-detail").value = i.detail; $("i-statut").value = i.statut;
+        $("titre-form").textContent = "Modifier « " + i.titre + " »";
+        $("i-titre").focus();
+      };
+      var sup = el("button", { texte: "Supprimer" });
+      sup.onclick = function () { if (confirm("Supprimer « " + i.titre + " » et ses votes ?")) appeler({ action: "supprimer-idee", id: i.id }).then(charger).catch(function (e) { message(e.message); }); };
+      corps.appendChild(el("tr", {}, [
+        el("td", {}, [el("strong", { texte: i.titre }), el("div", { class: "meta", texte: i.detail })]),
+        el("td", { texte: STATUTS[i.statut] || i.statut }),
+        el("td", { texte: String(i.votes) }),
+        el("td", {}, [el("div", { class: "ligne" }, [modifier, sup])])
+      ]));
+    });
+  }
+
+  function afficherSignalements(j) {
+    var zone = $("signalements");
+    zone.textContent = "";
+    if (!j.signalements.length) zone.appendChild(el("p", { class: "meta", texte: "Aucun signalement en attente." }));
+    j.signalements.forEach(function (s) {
+      var boutons = [];
+      function bouton(texte, action, confirmation) {
+        var b = el("button", { texte: texte });
+        b.onclick = function () {
+          if (confirmation && !confirm(confirmation)) return;
+          appeler({ action: action, cible: s.cible, type: s.cible_type }).then(charger).catch(function (e) { message(e.message); });
+        };
+        boutons.push(b);
+      }
+      if (s.cible_type === "profil") {
+        bouton("Masquer", "masquer");
+        bouton("Rien à redire (remettre)", "afficher");
+        bouton("Supprimer le profil", "supprimer-profil", "Supprimer le profil « " + s.cible + " » ?");
+      } else {
+        bouton("Supprimer le message", "supprimer-message", "Supprimer ce message ?");
+        bouton("Rien à redire", "signalement-traite");
+      }
+      var motifs = String(s.motifs || "").split(" | ").filter(Boolean).join(" · ");
+      zone.appendChild(el("div", { class: "retour" }, [
+        el("div", { class: "meta", texte: (s.cible_type === "profil" ? "👤 Profil" : "💬 Message") + " · " + s.nombre + " signalement(s) · " + new Date(s.dernier).toLocaleString("fr-FR") }),
+        el("div", { class: "texte", texte: s.apercu || s.cible }),
+        motifs ? el("div", { class: "meta", texte: "Motifs : " + motifs }) : el("span"),
+        el("div", { class: "ligne" }, boutons)
+      ]));
+    });
+    $("masques").textContent = j.masques && j.masques.length ? "Profils masqués : " + j.masques.join(", ") : "";
+  }
+
+  function afficherCodes(j) {
+    var zone = $("codes");
+    zone.textContent = "";
+    var totaux = (j.totaux || []).map(function (t) { return t.reseau + " → " + (t.recompense === "jours" ? "7 jours" : "tarif fidèle") + " : " + t.n; }).join(" · ");
+    if (totaux) zone.appendChild(el("p", { class: "meta", texte: "Récompenses données : " + totaux }));
+    j.codes.forEach(function (c) {
+      var expire = c.expire_le < Date.now();
+      var sup = el("button", { texte: "Supprimer" });
+      sup.onclick = function () { appeler({ action: "code-supprimer", code: c.code }).then(charger); };
+      zone.appendChild(el("div", { class: "retour" + (expire ? " lu" : "") }, [
+        el("div", { class: "texte", texte: c.code + "  (" + c.reseau + ")" }),
+        el("div", { class: "meta", texte: (expire ? "Expiré" : "Valable jusqu'au " + new Date(c.expire_le).toLocaleString("fr-FR")) + " · " + c.utilisations + " utilisation(s)" }),
+        el("div", { class: "ligne" }, [sup])
+      ]));
+    });
+  }
+  $("c-creer").onclick = function () {
+    appeler({ action: "code-creer", reseau: $("c-reseau").value, code: $("c-code").value, heures: parseInt($("c-heures").value, 10) || 48 })
+      .then(function (r) { $("c-code").value = ""; return charger().then(function () { message("Code créé : " + r.code + " — publie-le en story."); }); })
+      .catch(function (e) { message(e.message); });
+  };
+
+  function charger() {
+    message("Chargement…");
+    appeler({ action: "codes-lister" }).then(afficherCodes).catch(function () {});
+    appeler({ action: "signalements" }).then(afficherSignalements).catch(function () {});
+    return appeler({ action: "lister" }).then(function (j) {
+      donnees = j;
+      $("contenu").hidden = false;
+      var nonLus = j.retours.filter(function (r) { return !r.lu; }).length;
+      message(j.retours.length + " message(s), dont " + nonLus + " non lu(s).");
+      afficher();
+    }).catch(function (e) { message(e.message === "Failed to fetch" ? "Worker injoignable : vérifie l'adresse." : e.message); });
+  }
+
+  $("charger").onclick = charger;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-filtre]"), function (b) {
+    b.onclick = function () {
+      filtre = b.getAttribute("data-filtre");
+      Array.prototype.forEach.call(document.querySelectorAll("[data-filtre]"), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      afficher();
+    };
+  });
+  $("vider").onclick = function () {
+    ["i-id", "i-titre", "i-detail"].forEach(function (id) { $(id).value = ""; });
+    $("i-statut").value = "a-venir"; $("i-ordre").value = "100";
+    $("titre-form").textContent = "Ajouter une idée";
+  };
+  $("enregistrer").onclick = function () {
+    appeler({
+      action: "enregistrer-idee",
+      id: $("i-id").value.trim(),
+      titre: $("i-titre").value.trim(),
+      detail: $("i-detail").value.trim(),
+      statut: $("i-statut").value,
+      ordre: parseInt($("i-ordre").value, 10) || 100
+    }).then(function () { $("vider").onclick(); return charger(); }).catch(function (e) { message(e.message === "idee-invalide" ? "Identifiant (minuscules, chiffres, tirets) et titre obligatoires." : e.message); });
+  };
+})();
+</script>
+</body>
+</html>
