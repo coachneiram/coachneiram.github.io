@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Défi Neiram</title>
+<meta name="description" content="Un ami te lance un défi de 7 jours sur Neiram : le plus de pas, de séances ou de minutes de sport.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav><a href="index.html">Neiram</a><a href="confidentialite.html">Confidentialité</a><a href="conditions.html">Conditions</a><a href="support.html">Aide</a></nav>
+<main>
+<h1>⚔️ Un ami te lance un défi</h1>
+<p class="maj">7 jours pour faire plus de pas, de séances ou de minutes de sport que lui.</p>
+<div class="carte" id="avec-code" hidden>
+<p><strong>Code du défi : <span id="code-defi"></span></strong></p>
+<ol>
+<li>Installe Neiram (gratuit).</li>
+<li>Ouvre l'onglet <strong>Séances</strong>, carte <strong>Défis entre amis</strong>.</li>
+<li>Entre ton prénom ou pseudo et le code, puis touche <strong>Rejoindre</strong>.</li>
+</ol>
+</div>
+<div class="carte" id="sans-code">
+<p>Demande le code du défi à l'ami qui t'a invité, puis entre-le dans Neiram : onglet Séances, carte « Défis entre amis ».</p>
+</div>
+<p>Bientôt sur l'App Store et Google Play.</p>
+<script>
+(function () {
+  var code = (new URLSearchParams(location.search).get("code") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
+  if (!/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/.test(code)) return;
+  document.getElementById("code-defi").textContent = code;
+  document.getElementById("avec-code").hidden = false;
+  document.getElementById("sans-code").hidden = true;
+})();
+</script>
+</main>
+</body>
+</html>
