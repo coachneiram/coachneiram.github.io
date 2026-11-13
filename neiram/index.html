@@ -12,6 +12,11 @@
 <main>
 <h1>Neiram: Calories &amp; Musculation</h1>
 <p class="maj">Ton suivi nutrition, entraînement, sommeil et mesures, au même endroit.</p>
+<div class="carte" id="telecharger">
+<p><strong>Télécharge Neiram</strong></p>
+<p><a class="bouton-store" id="lien-ios" href="https://apps.apple.com/app/neiram-calories-musculation/id6826544090">📲 iPhone : App Store</a></p>
+<p><a class="bouton-store" id="lien-android" href="https://play.google.com/store/apps/details?id=fr.coachneiram.app">📲 Android : Google Play</a></p>
+</div>
 <div class="carte">
 <p>Gratuit : toute ta saisie (repas, code-barres, séances, sommeil, mesures, photos), ta journée en cours et un aperçu de ta semaine. Neiram Premium : ce que l'app calcule, analyse et te propose (IA, courbes sur la durée, progression et records, diète flexible, bilans, recettes et séances sans matériel).</p>
 <p>Pas de compte, aucun pisteur : tes données restent sur ton téléphone.</p>
@@ -19,8 +24,13 @@
 <div class="carte" id="invitation" hidden>
 <p><strong>Un ami t'invite sur Neiram.</strong> Installe l'app, puis touche l'icône cadeau 🎁 en haut de l'écran et entre son code&nbsp;: <strong id="code-invitation"></strong>. Tu reçois 7 jours de Premium offerts.</p>
 </div>
-<p>Bientôt sur l'App Store et Google Play.</p>
+
 <script>
+(function () {
+  var ua = navigator.userAgent || "";
+  var premier = /android/i.test(ua) ? "lien-android" : (/iphone|ipad|ipod/i.test(ua) ? "lien-ios" : null);
+  if (premier) { var a = document.getElementById(premier); a.classList.add("principal"); var bloc = a.parentNode; bloc.parentNode.insertBefore(bloc, bloc.parentNode.children[1]); }
+})();
 (function () {
   var code = (new URLSearchParams(location.search).get("code") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
   if (!/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/.test(code)) return;
