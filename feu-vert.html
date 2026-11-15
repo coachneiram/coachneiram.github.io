@@ -9,11 +9,14 @@
      PLACES_RESTANTES : nombre de places encore disponibles (0 = complet)
      QUESTIONNAIRE_URL : lien du formulaire hébergé (TinyPages, Tally…).
        Valeur provisoire "#questionnaire" = formulaire de secours en bas de page.
+     FORM_ENDPOINT : réception du questionnaire (Worker Cloudflare de Coach Neiram,
+       route /reservation-feu-vert → script Google → onglet « Feu Vert – Réservations »).
+       En cas d'échec, la page ouvre l'email de la personne avec ses réponses (mailto).
      ============================================================ */
   const PLACES_RESTANTES = 12;
   const PLACES_TOTAL = 12;
   const QUESTIONNAIRE_URL = "#questionnaire";
-  const FORM_ENDPOINT = "https://formsubmit.co/ajax/coachingbymarien@gmail.com";
+  const FORM_ENDPOINT = "https://coach-neiram-proxy.pelissier-marien.workers.dev/reservation-feu-vert";
 </script>
 <title>Feu Vert — Cohorte fondatrice | Coach Neiram</title>
 <meta name="description" content="Feu Vert : Coaching à distance de 6 semaines pour débuter ou reprendre la musculation en salle. 8 gestes de base validés un par un, corrections vidéo de ton coach sur WhatsApp, 4 missions salle. Cohorte fondatrice le 18 janvier 2027, 12 places à 59 €.">
@@ -693,16 +696,20 @@
     <h2 id="titre-questionnaire">Réserve ta place fondatrice</h2>
     <p>Quelques questions pour savoir si Feu Vert te correspond et dans quel parcours te placer. Aucun paiement à cette étape.</p>
 
-    <form class="form-card" id="fv-form" novalidate>
+    <form class="form-card" id="fv-form" novalidate style="position:relative">
       <div class="form-error" id="form-error" role="alert" tabindex="-1"></div>
+      <!-- Champ piège anti-robot : invisible, ne pas remplir. -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+        <label>Site web (laisser vide)<input type="text" name="site_web" tabindex="-1" autocomplete="off"></label>
+      </div>
 
       <fieldset>
         <legend><span class="qn" aria-hidden="true">1</span>Tes coordonnées</legend>
         <div class="grid-2">
-          <label class="field">Prénom <span class="req" aria-hidden="true">*</span><input type="text" name="prenom" autocomplete="given-name" required aria-required="true"></label>
-          <label class="field">Email <span class="req" aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
-          <label class="field">Téléphone (optionnel)<input type="tel" name="telephone" autocomplete="tel"></label>
-          <label class="field">Instagram (optionnel)<input type="text" name="instagram" placeholder="@…" autocapitalize="off"></label>
+          <label class="field">Prénom <span class="req" aria-hidden="true">*</span><input type="text" name="prenom" maxlength="60" autocomplete="given-name" required aria-required="true"></label>
+          <label class="field">Email <span class="req" aria-hidden="true">*</span><input type="email" name="email" maxlength="254" autocomplete="email" required aria-required="true"></label>
+          <label class="field">Téléphone (optionnel)<input type="tel" name="telephone" maxlength="30" autocomplete="tel"></label>
+          <label class="field">Instagram (optionnel)<input type="text" name="instagram" maxlength="60" placeholder="@…" autocapitalize="off"></label>
         </div>
       </fieldset>
 
@@ -723,7 +730,7 @@
         <label class="opt"><input type="checkbox" name="blocage" value="Je manque de régularité"> Je manque de régularité</label>
         <label class="opt"><input type="checkbox" name="blocage" value="Mes horaires"> Mes horaires</label>
         <label class="opt"><input type="checkbox" name="blocage" value="Autre" id="blocage-autre"> Autre</label>
-        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="blocage_autre"></label>
+        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="blocage_autre" maxlength="200"></label>
       </fieldset>
 
       <fieldset>
@@ -734,7 +741,7 @@
         <label class="opt"><input type="radio" name="objectif" value="Reprendre une routine"> Reprendre une routine</label>
         <label class="opt"><input type="radio" name="objectif" value="Me renforcer"> Me renforcer</label>
         <label class="opt"><input type="radio" name="objectif" value="Autre"> Autre</label>
-        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="objectif_autre"></label>
+        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="objectif_autre" maxlength="200"></label>
       </fieldset>
 
       <fieldset>
@@ -754,7 +761,7 @@
         <label class="opt"><input type="radio" name="lieu" value="En salle, abonnement en cours" required> En salle, abonnement en cours</label>
         <label class="opt"><input type="radio" name="lieu" value="En salle, abonnement prévu avant janvier"> En salle, abonnement prévu avant janvier</label>
         <label class="opt"><input type="radio" name="lieu" value="À la maison uniquement"> À la maison uniquement</label>
-        <label class="field">Nom de ta salle ou matériel disponible (facultatif)<input type="text" name="salle"></label>
+        <label class="field">Nom de ta salle ou matériel disponible (facultatif)<input type="text" name="salle" maxlength="200"></label>
       </fieldset>
 
       <fieldset>
@@ -777,13 +784,13 @@
         <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni partagées. Elles sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. J'accepte aussi le traitement de ma réponse à la question 7 (contre-indication médicale), utilisée uniquement pour vérifier que je peux commencer en sécurité. <span class="req" aria-hidden="true">*</span></span></label>
         <p class="help" style="margin-top:12px">Facultatif, modifiable à tout moment :</p>
         <label class="opt"><input type="checkbox" name="tableau" value="Oui"> <span>J'accepte que mon prénom (ou le pseudo de mon choix) et ma régularité (séances faites, check-ins envoyés, missions validées) apparaissent dans le tableau de régularité visible par les membres de la cohorte.</span></label>
-        <label class="field">Pseudo souhaité (optionnel)<input type="text" name="pseudo"></label>
+        <label class="field">Pseudo souhaité (optionnel)<input type="text" name="pseudo" maxlength="40"></label>
         <label class="opt"><input type="checkbox" name="binome" value="Oui"> <span>J'accepte que mon prénom, mon objectif et mes créneaux soient communiqués à mon binôme, ainsi que mon numéro de téléphone si je choisis WhatsApp pour échanger avec lui.</span></label>
         <p class="help" style="margin-top:12px"><a href="cgv-feu-vert.html#confidentialite">Politique de confidentialité</a></p>
       </fieldset>
 
       <button type="submit" class="btn btn-dark btn-block">Envoyer ma demande <span class="arrow" aria-hidden="true">→</span></button>
-      <p class="help" style="margin-top:12px">Tes réponses me parviennent directement par email, je les lis moi-même. Tu peux aussi écrire à <a href="mailto:coachingbymarien@gmail.com">coachingbymarien@gmail.com</a>.</p>
+      <p class="help" style="margin-top:12px">Tes réponses me parviennent directement, je les lis moi-même. Tu peux aussi écrire à <a href="mailto:coachingbymarien@gmail.com">coachingbymarien@gmail.com</a>.</p>
       <div class="form-ok" id="form-ok" role="status"></div>
     </form>
   </div>
@@ -865,6 +872,7 @@
   /* ---- Questionnaire de secours ---- */
   var form = document.getElementById("fv-form");
   if (!form) return;
+  var ouvertLe = Date.now(); // durée de remplissage, contrôlée par le serveur (anti-robot)
 
   // Q3 : 3 choix maximum
   var q3 = form.querySelectorAll('input[name="blocage"]');
@@ -940,14 +948,24 @@
     if (btn) { btn.disabled = true; }
     ok.textContent = "Envoi en cours…";
     ok.classList.add("show");
-    // Envoi via FormSubmit (même service que le formulaire de contact du site).
-    // Activation unique : au premier envoi, FormSubmit envoie un email de confirmation à coachingbymarien@gmail.com.
+    // Envoi au Worker Coach Neiram (Cloudflare) → script Google (onglet « Feu Vert – Réservations »).
+    // Les choix sont envoyés tels quels : le serveur les vérifie contre les mêmes listes.
+    var charge = {
+      prenom: val("prenom"), email: mail, telephone: val("telephone"), instagram: val("instagram"),
+      niveau: radio("niveau"), blocage: checks("blocage"), blocageAutre: val("blocage_autre"),
+      objectif: radio("objectif"), objectifAutre: val("objectif_autre"), creneaux: checks("creneaux"),
+      lieu: radio("lieu"), salle: val("salle"), contreIndication: radio("contre_indication"),
+      presentiel: form.elements["presentiel"].checked, consentement: form.elements["consentement"].checked,
+      tableau: form.elements["tableau"].checked, pseudo: val("pseudo"), binome: form.elements["binome"].checked,
+      site_web: val("site_web"), dureeMs: Date.now() - ouvertLe
+    };
     fetch(FORM_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ _subject: subject, _template: "box", _captcha: "false", prenom: val("prenom"), email: val("email"), reponses: texte })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(charge)
     }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function(){
+      .then(function(d){
+        if (!d || d.ok !== true) return Promise.reject("refus");
         ok.textContent = "Merci " + val("prenom") + ", ta demande est bien partie. Je lis ta réponse moi-même et je te réponds sous 48 h ouvrées. Aucun paiement à cette étape.";
         form.reset();
       })
