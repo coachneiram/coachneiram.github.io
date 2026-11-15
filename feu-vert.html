@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+  /* ============================================================
+     RÉGLAGES — à modifier ici uniquement
+     PLACES_RESTANTES : nombre de places encore disponibles (0 = complet)
+     QUESTIONNAIRE_URL : lien du formulaire hébergé (TinyPages, Tally…).
+       Valeur provisoire "#questionnaire" = formulaire de secours en bas de page.
+     ============================================================ */
+  const PLACES_RESTANTES = 12;
+  const PLACES_TOTAL = 12;
+  const QUESTIONNAIRE_URL = "#questionnaire";
+  const FORM_ENDPOINT = "https://formsubmit.co/ajax/coachingbymarien@gmail.com";
+</script>
+<title>Feu Vert — Cohorte fondatrice | Coach Neiram</title>
+<meta name="description" content="Feu Vert : Coaching à distance de 6 semaines pour débuter ou reprendre la musculation en salle. 8 gestes de base validés un par un, corrections vidéo de ton coach sur WhatsApp, 4 missions salle. Cohorte fondatrice le 18 janvier 2027, 12 places à 59 €.">
+<meta name="theme-color" content="#0D0D0D">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Coach Neiram">
+<meta property="og:image" content="https://coachneiram.github.io/feu-vert/og-feu-vert.png">
+<meta property="og:title" content="Feu Vert — Débute la musculation en salle, geste par geste">
+<meta property="og:description" content="8 gestes de base appris un par un, corrigés en vidéo par ton coach, 4 missions pour te sentir à ta place en salle. Cohorte fondatrice : démarrage le lundi 18 janvier 2027, 12 places.">
+<meta property="og:url" content="https://coachneiram.github.io/feu-vert.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0B0B'/%3E%3Crect x='8' y='20' width='8' height='24' rx='2' fill='%23FFD400'/%3E%3Crect x='17' y='24' width='6' height='16' rx='2' fill='%23FFD400'/%3E%3Crect x='22' y='29' width='20' height='6' fill='%23FFD400'/%3E%3Crect x='41' y='24' width='6' height='16' rx='2' fill='%23FFD400'/%3E%3Crect x='48' y='20' width='8' height='24' rx='2' fill='%23FFD400'/%3E%3C/svg%3E">
+<!-- Police facultative : si Google Fonts ne charge pas, la page utilise la police système. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&display=swap">
+<style>
+  :root{
+    --y:#FFD500; --k:#0D0D0D; --k2:#161616; --w:#FFFFFF; --g:#F5F4EF;
+    --txt:#151515; --mut:#4A4A4A; --mut-d:#C9C9C9; --line:#E2E0D8;
+    --red:#E5332A; --ora:#F59100; --grn:#1E9E55;
+    --r:18px;
+    --font: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+  body{margin:0;font-family:var(--font);font-size:17px;line-height:1.6;color:var(--txt);background:var(--w);-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  h1,h2,h3{line-height:1.15;margin:0 0 .6em;letter-spacing:-.01em}
+  h2{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:900}
+  h3{font-size:1.15rem;font-weight:800}
+  p{margin:0 0 1em}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  .narrow{max-width:760px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:-999px;top:8px;background:var(--y);color:var(--k);padding:12px 16px;z-index:100;font-weight:700;border-radius:8px}
+  .skip:focus{left:8px}
+  :focus-visible{outline:3px solid var(--y);outline-offset:3px;border-radius:6px}
+  .on-light :focus-visible, .section-light :focus-visible, .section-grey :focus-visible{outline-color:var(--k)}
+  .section-yellow :focus-visible{outline-color:var(--k)}
+
+  /* ---------- Bandeau + header ---------- */
+  .ribbon{background:var(--y);color:var(--k);font-weight:700;font-size:.9rem;text-align:center;padding:10px 16px;line-height:1.35}
+  .ribbon strong{font-weight:900}
+  .ribbon .count{display:inline-block;margin-left:6px;background:var(--k);color:var(--y);border-radius:999px;padding:1px 10px;font-weight:800;white-space:nowrap}
+  header.site{background:var(--k);color:var(--w)}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:12px}
+  .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;letter-spacing:.08em;font-size:1rem;min-height:44px}
+  .logo svg{width:34px;height:20px;flex:none}
+  header.site .header-cta{display:none}
+
+  /* ---------- Boutons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:14px 26px;border-radius:999px;
+       background:var(--y);color:var(--k);font-weight:800;font-size:1.02rem;text-decoration:none;text-align:center;line-height:1.25;
+       border:2px solid var(--y);cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;font-family:inherit}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,212,0,.28)}
+  .btn .arrow{font-size:1.2em;line-height:1}
+  .btn-dark{background:var(--k);color:var(--y);border-color:var(--k)}
+  .btn-dark:hover{box-shadow:0 8px 22px rgba(0,0,0,.25)}
+  .btn-block{width:100%}
+  .cta-row{margin-top:28px}
+  .cta-note{font-size:.92rem;margin-top:12px;color:var(--mut)}
+  .section-dark .cta-note,.hero .cta-note{color:var(--mut-d)}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--k);color:var(--w);padding:36px 0 64px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,0,.16),rgba(255,212,0,0) 70%);pointer-events:none}
+  .hero-grid{display:grid;gap:36px;position:relative;z-index:1}
+  .lights-row{display:flex;gap:8px;margin-bottom:22px}
+  .lights-row span{width:16px;height:16px;border-radius:50%}
+  .hero h1{font-size:clamp(1.75rem,7.4vw,3.3rem);font-weight:800;margin-bottom:18px}
+  .hero h1 .brand{display:block;color:var(--y);font-weight:900;font-size:1.45em;letter-spacing:-.02em;margin-bottom:6px}
+  .hero .lead{font-size:1.08rem;color:#EDEDED;max-width:620px}
+  .reassure{display:flex;gap:10px;align-items:flex-start;color:var(--mut-d);font-size:.95rem;margin:18px 0 0;max-width:620px}
+  .reassure svg{flex:none;margin-top:3px}
+  .places{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-weight:700;font-size:.95rem;color:var(--w)}
+  .places .dot{width:10px;height:10px;border-radius:50%;background:var(--grn);box-shadow:0 0 0 4px rgba(30,158,85,.25)}
+  .places strong{color:var(--y);font-size:1.15rem}
+
+  /* Feu tricolore illustratif (hero) */
+  .tl-card{justify-self:center;display:none;gap:18px;align-items:center}
+  .tl{background:#1d1d1d;border:3px solid #2c2c2c;border-radius:40px;padding:14px;display:grid;gap:12px;box-shadow:inset 0 0 0 2px #000}
+  .tl i{display:block;width:58px;height:58px;border-radius:50%;opacity:.22}
+  .tl i.r{background:var(--red)} .tl i.o{background:var(--ora)} .tl i.g{background:var(--grn);opacity:1;box-shadow:0 0 28px rgba(30,158,85,.7)}
+  .tl-legend{display:grid;gap:22px;font-weight:700;font-size:.95rem}
+  .tl-legend span{display:flex;align-items:center;gap:8px;min-height:58px}
+
+  /* ---------- Sections ---------- */
+  section{padding:64px 0;scroll-margin-top:12px}
+  .section-light{background:var(--w)}
+  .section-grey{background:var(--g)}
+  .section-dark{background:var(--k);color:var(--w)}
+  .section-yellow{background:var(--y);color:var(--k)}
+  .eyebrow{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;padding:6px 12px;border-radius:999px;background:var(--k);color:var(--y)}
+  .section-dark .eyebrow{background:var(--y);color:var(--k)}
+  .section-yellow .eyebrow{background:var(--k);color:var(--y)}
+  .muted{color:var(--mut)}
+  .section-dark .muted{color:var(--mut-d)}
+  .punch{font-size:1.25rem;font-weight:800;border-left:6px solid var(--y);padding-left:14px;margin-top:8px}
+
+  /* Pastilles de feu */
+  .lights{display:inline-flex;gap:5px;background:var(--k);padding:5px 7px;border-radius:999px;flex:none}
+  .lights i{width:12px;height:12px;border-radius:50%;opacity:.22}
+  .lights i.r{background:var(--red)} .lights i.o{background:var(--ora)} .lights i.g{background:var(--grn)}
+  .lights.is-r i.r,.lights.is-o i.o,.lights.is-g i.g{opacity:1}
+  .lights.is-r i.r{box-shadow:0 0 8px var(--red)} .lights.is-o i.o{box-shadow:0 0 8px var(--ora)} .lights.is-g i.g{box-shadow:0 0 8px var(--grn)}
+
+  /* Mécanisme */
+  .gestures{list-style:none;padding:0;margin:0 0 36px;display:grid;grid-template-columns:1fr 1fr;gap:10px;counter-reset:g}
+  .gestures li{counter-increment:g;background:var(--w);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:96px;justify-content:space-between}
+  .gestures li .name{font-weight:700;line-height:1.3;font-size:.98rem}
+  .gestures li .name::before{content:counter(g);display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--y);color:var(--k);font-size:.8rem;font-weight:900;margin-right:8px;vertical-align:1px}
+  .steps{display:grid;gap:14px;margin:0 0 30px;padding:0;list-style:none}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;background:var(--w);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+  .step .bulb{width:44px;height:44px;border-radius:50%;margin-top:2px}
+  .step.r .bulb{background:var(--red);box-shadow:0 0 0 6px rgba(229,51,42,.15)}
+  .step.o .bulb{background:var(--ora);box-shadow:0 0 0 6px rgba(245,145,0,.15)}
+  .step.g .bulb{background:var(--grn);box-shadow:0 0 0 6px rgba(30,158,85,.15)}
+  .step h3{margin:0 0 4px;font-size:1.1rem}
+  .step p{margin:0;color:var(--mut)}
+  .rule{background:var(--k);color:var(--w);border-radius:var(--r);padding:22px;margin-bottom:40px}
+  .rule strong{color:var(--y);display:block;font-size:1.15rem;margin-bottom:6px}
+  .rule p{margin:0}
+  .missions{list-style:none;padding:0;margin:20px 0;display:grid;gap:12px;counter-reset:m}
+  .missions li{counter-increment:m;background:var(--w);border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 64px;position:relative}
+  .missions li::before{content:counter(m);position:absolute;left:16px;top:14px;width:34px;height:34px;border-radius:10px;background:var(--k);color:var(--y);display:grid;place-items:center;font-weight:900}
+  .missions strong{font-weight:800}
+
+  /* Passeport */
+  .pass-wrap{display:grid;gap:28px;margin-top:8px}
+  .passport{background:var(--k);color:var(--w);border-radius:22px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.18);position:relative;overflow:hidden;max-width:440px;width:100%;justify-self:center}
+  .passport::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:linear-gradient(90deg,var(--red),var(--ora),var(--grn))}
+  .passport header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+  .passport .ptitle{font-weight:900;letter-spacing:.06em;text-transform:uppercase;font-size:.95rem;color:var(--y)}
+  .passport .psub{font-size:.8rem;color:var(--mut-d)}
+  .passport ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+  .passport li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #333;font-size:.95rem}
+  .passport li:last-child{border-bottom:0}
+  .level{margin-top:16px;background:#1c1c1c;border-radius:14px;padding:14px}
+  .level .lv-top{display:flex;justify-content:space-between;font-size:.88rem;font-weight:700;margin-bottom:10px}
+  .level .lv-top span:last-child{color:var(--y)}
+  .lv-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .lv-bar i{height:10px;border-radius:999px;background:#333}
+  .lv-bar i.on{background:var(--y)}
+  .pass-caption{font-size:.82rem;color:var(--mut-d);margin-top:12px}
+  .levels{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+  .levels li{display:flex;gap:12px;align-items:baseline}
+  .levels .tag{flex:none;font-weight:900;background:var(--y);color:var(--k);border-radius:8px;padding:2px 8px;font-size:.85rem}
+
+  /* Outils (3 bis) */
+  .tools{display:grid;gap:16px;margin-top:26px}
+  .tool{background:var(--k2);border:1px solid #2a2a2a;border-radius:var(--r);padding:22px}
+  .tool .num{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--y);color:var(--k);font-weight:900;margin-bottom:12px}
+  .tool h3{color:var(--w)}
+  .tool p,.tool li{color:#E4E4E4}
+  .tool p:last-child{margin-bottom:0}
+  .tool .levels .tag{background:var(--y)}
+
+  /* Frise */
+  .tracks{display:grid;gap:12px;margin:18px 0 30px}
+  .track{background:var(--w);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+  .track h3{margin-bottom:6px}
+  .track p{margin:0;color:var(--mut)}
+  .timeline{list-style:none;margin:0;padding:0;position:relative}
+  .timeline::before{content:"";position:absolute;left:21px;top:8px;bottom:8px;width:4px;border-radius:4px;background:linear-gradient(180deg,var(--red),var(--ora) 50%,var(--grn))}
+  .timeline li{position:relative;padding:0 0 22px 64px}
+  .timeline li:last-child{padding-bottom:0}
+  .wk{position:absolute;left:0;top:0;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:.95rem;background:var(--k);color:var(--y);border:4px solid var(--g)}
+  .timeline h3{margin:8px 0 4px;font-size:1.08rem}
+  .timeline p{margin:0;color:var(--mut)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip{font-size:.78rem;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--k);color:var(--w)}
+  .chip.y{background:var(--y);color:var(--k)}
+  .monday{margin-top:28px;background:var(--y);color:var(--k);border-radius:var(--r);padding:18px 20px;font-weight:700}
+
+  /* Inclus / limites */
+  .two{display:grid;gap:20px}
+  .card{border-radius:var(--r);padding:24px;border:1px solid var(--line);background:var(--w)}
+  .card.dark{background:var(--k);color:var(--w);border-color:var(--k)}
+  .ticks{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  .ticks li{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start}
+  .ticks li::before{content:"";width:26px;height:26px;border-radius:50%;margin-top:1px;background:var(--y) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%230B0B0B' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+  .minus li::before{background:#2a2a2a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12h10' fill='none' stroke='%23FFD400' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat}
+  .card.dark p{color:#E4E4E4}
+
+  /* Marien */
+  .coach{display:grid;gap:28px;align-items:center}
+  .photo{position:relative;aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:var(--k);max-width:300px;width:100%;justify-self:center;border:4px solid var(--y)}
+  @media (min-width:760px){.photo{max-width:380px}}
+  .photo .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--y);font-weight:900;letter-spacing:.08em;font-size:.9rem;padding:20px}
+  .photo .ph > div{display:grid;justify-items:center;gap:12px}
+  .photo .ph svg{width:90px;height:52px}
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .rating{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 10px;background:var(--k);color:var(--w);padding:12px 18px;border-radius:16px;font-weight:700;font-size:.95rem;margin-top:6px}
+  .rating .stars{color:var(--y);letter-spacing:2px}
+
+  /* Pour qui */
+  .fit{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  .fit li{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start}
+  .fit li::before{content:"";width:16px;height:16px;border-radius:50%;margin-top:6px}
+  .fit.yes li::before{background:var(--grn);box-shadow:0 0 0 4px rgba(30,158,85,.18)}
+  .fit.no li::before{background:var(--red);box-shadow:0 0 0 4px rgba(229,51,42,.18)}
+  .fit-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .fit-head h3{margin:0}
+
+  /* Tarifs */
+  .price-main{background:var(--k);color:var(--w);border-radius:26px;padding:26px 22px;border:3px solid var(--y);position:relative}
+  .price-main .tag-top{display:inline-block;background:var(--y);color:var(--k);font-weight:900;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:6px 12px;margin-bottom:14px}
+  .price-main h3{font-size:1.25rem;color:var(--w)}
+  .amount{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
+  .amount b{font-size:4rem;line-height:1;font-weight:900;color:var(--y)}
+  .amount span{color:var(--mut-d);font-weight:600}
+  .lock{display:inline-flex;align-items:center;gap:10px;background:var(--y);color:var(--k);font-weight:800;border-radius:12px;padding:10px 14px;margin:14px 0}
+  .price-main .ticks li{color:#ECECEC}
+  .price-main .ticks strong{color:var(--w)}
+  .price-grid{display:grid;gap:12px;margin-top:16px}
+  .price-card{background:var(--w);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .price-card .p{font-size:1.6rem;font-weight:900;white-space:nowrap}
+  .price-card .l{font-weight:700}
+  .price-card .s{display:block;font-weight:500;color:var(--mut);font-size:.92rem}
+  .legal-note{font-size:.9rem;color:var(--mut);margin-top:16px}
+
+  /* FAQ */
+  .faq{display:grid;gap:10px}
+  .faq details{background:var(--w);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .faq summary{list-style:none;cursor:pointer;min-height:56px;padding:16px 56px 16px 18px;font-weight:800;position:relative;line-height:1.35}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--y);color:var(--k);display:grid;place-items:center;font-size:1.3rem;font-weight:900;line-height:1}
+  .faq details[open] summary::after{content:"\2212"}
+  .faq details[open] summary{border-bottom:1px solid var(--line)}
+  .faq .ans{padding:14px 18px 18px;color:var(--mut)}
+  .faq .ans p:last-child{margin:0}
+
+  /* CTA final */
+  .final{text-align:center}
+  .final p{font-size:1.1rem;max-width:620px;margin:0 auto 1em}
+
+  /* Questionnaire */
+  .form-card{background:var(--w);border:1px solid var(--line);border-radius:22px;padding:22px}
+  fieldset{border:0;padding:0;margin:0 0 26px}
+  legend{font-weight:800;font-size:1.05rem;margin-bottom:10px;padding:0;line-height:1.35}
+  legend .qn{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--k);color:var(--y);font-size:.85rem;margin-right:8px;vertical-align:1px}
+  label.field{display:block;font-weight:700;font-size:.95rem;margin-bottom:12px}
+  .req{color:#B3261E}
+  input[type=text],input[type=email],input[type=tel]{display:block;width:100%;margin-top:6px;min-height:48px;padding:10px 14px;font:inherit;font-weight:400;border:2px solid #BDBBB2;border-radius:12px;background:#fff;color:var(--txt)}
+  input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus{border-color:var(--k);outline:3px solid var(--y);outline-offset:0}
+  .opt{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;font-weight:500;line-height:1.4;background:#fff}
+  .opt:has(input:checked){border-color:var(--k);background:#FFFBE0}
+  .opt input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--k);cursor:pointer}
+  .opt.disabled{opacity:.5;cursor:not-allowed}
+  .help{font-size:.88rem;color:var(--mut);margin:-4px 0 10px}
+  .inline-other{margin:-2px 0 10px 0}
+  .alert{display:none;background:#FFF4D1;border-left:5px solid var(--ora);border-radius:10px;padding:12px 14px;font-size:.95rem;margin-top:8px}
+  .alert.show{display:block}
+  .consent{font-size:.92rem}
+  .consent .opt{font-weight:400}
+  .form-error{display:none;background:#FDECEA;color:#8A1C14;border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:14px}
+  .form-error.show{display:block}
+  .form-ok{display:none;background:#E8F6EE;color:#0F5C31;border-radius:12px;padding:14px 16px;font-weight:600;margin-top:14px}
+  .form-ok.show{display:block}
+
+  /* Pied de page */
+  footer.site{background:var(--k);color:var(--mut-d);padding:40px 0 110px;font-size:.92rem}
+  footer.site .wrap{display:grid;gap:18px}
+  footer.site a{color:var(--w);display:inline-block;padding:12px 0;margin:-12px 0}
+  footer.site nav ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+  footer.site nav a{display:inline-flex;align-items:center;min-height:44px;text-underline-offset:3px}
+  footer.site .logo{color:var(--w)}
+
+  /* Barre CTA mobile */
+  .sticky{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(11,11,11,.96);backdrop-filter:blur(6px);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;transform:translateY(110%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s;border-top:1px solid #2a2a2a}
+  .sticky.show{transform:none;visibility:visible;transition:transform .25s ease}
+  .sticky .s-info{color:var(--w);font-size:.82rem;line-height:1.25;flex:none}
+  .sticky .s-info strong{color:var(--y);font-size:1.05rem;display:block}
+  .sticky .btn{flex:1;min-height:48px;padding:10px 14px;font-size:.95rem}
+
+  /* ---------- Desktop ---------- */
+  @media (min-width:760px){
+    body{font-size:18px}
+    section{padding:96px 0}
+    .hero{padding:64px 0 96px}
+    .hero-grid{grid-template-columns:1.5fr .8fr;align-items:center}
+    header.site .header-cta{display:inline-flex;min-height:44px;padding:8px 18px;font-size:.92rem}
+    .tl-card{display:flex}
+    .gestures{grid-template-columns:repeat(4,1fr)}
+    .steps{grid-template-columns:repeat(3,1fr)}
+    .step{grid-template-columns:1fr;align-content:start}
+    .pass-wrap{grid-template-columns:1fr 1fr;align-items:start}
+    .tools{grid-template-columns:1fr 1fr}
+    .tracks{grid-template-columns:1fr 1fr}
+    .two{grid-template-columns:1.15fr .85fr}
+    .coach{grid-template-columns:.8fr 1.2fr}
+    .fit-grid{grid-template-columns:1fr 1fr}
+    .price-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:start}
+    .price-grid{margin-top:0}
+    .form-card{padding:36px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+    .sticky{display:none}
+    footer.site{padding-bottom:40px}
+    footer.site .wrap{grid-template-columns:1fr auto;align-items:start}
+  }
+  @media (min-width:1000px){
+    .timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+    .timeline::before{left:23px;right:23px;top:21px;bottom:auto;width:auto;height:4px;background:linear-gradient(90deg,var(--red),var(--ora) 50%,var(--grn))}
+    .timeline li{padding:64px 0 0}
+    .timeline h3{margin-top:0}
+    .timeline p{font-size:.92rem}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<div class="ribbon" role="note">
+  <strong>Cohorte fondatrice — démarrage lundi 18 janvier 2027 — 12 places</strong>
+  <span class="count"><span class="js-places">12</span>&nbsp;<span class="js-places-label">places restantes</span></span>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="#contenu" aria-label="Coach Neiram, haut de page">
+      <img src="feu-vert/logo-coach-neiram-blanc.png" alt="Coach Neiram — coaching sportif" height="44" style="height:44px;width:auto;display:block">
+    </a>
+    <a class="btn header-cta js-cta" href="#questionnaire">Je réserve ma place</a>
+  </div>
+</header>
+
+<main id="contenu">
+
+<!-- 1. HERO -->
+<section class="hero" aria-labelledby="titre-hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="lights-row" aria-hidden="true"><span style="background:var(--red)"></span><span style="background:var(--ora)"></span><span style="background:var(--grn)"></span></div>
+      <h1 id="titre-hero"><span class="brand">Feu Vert.</span> Tu apprends 8 gestes de base, un par un, et tu ne charges que ceux que ton coach a validés.</h1>
+      <p class="lead">Un coaching 100 % à distance, sur 6 semaines, pour débuter (ou reprendre) la musculation dans ta salle : un plan clair, tes vidéos corrigées par ton coach avec un retour sur WhatsApp, et 4 missions pour te sentir à ta place au milieu des machines.</p>
+      <p class="reassure">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#FFD500"/><path d="M6.5 12.5l3.5 3.5 7.5-8" fill="none" stroke="#0D0D0D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>2 séances par semaine, 45 à 50 minutes. Corrections individuelles en privé sur WhatsApp, groupe privé pour se motiver ensemble. Ouvert aux hommes comme aux femmes.</span>
+      </p>
+      <div class="cta-row">
+        <a class="btn js-cta" href="#questionnaire">Je réserve ma place fondatrice (2 min, sans paiement) <span class="arrow" aria-hidden="true">→</span></a>
+        <p class="cta-note">La cohorte ouvre si au moins 8 personnes s'engagent. Sinon, personne ne paie rien et je te préviens directement.</p>
+      </div>
+      <p class="places" aria-live="polite"><span class="dot" aria-hidden="true"></span><span><strong class="js-places">12</strong> <span class="js-places-label">places restantes</span> sur <span class="js-total">12</span></span></p>
+    </div>
+    <div class="tl-card" aria-hidden="true">
+      <div class="tl"><i class="r"></i><i class="o"></i><i class="g"></i></div>
+      <div class="tl-legend"><span>Rouge</span><span>Orange</span><span style="color:var(--y)">Vert</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PROBLÈME -->
+<section class="section-light" aria-labelledby="titre-probleme">
+  <div class="wrap narrow">
+    <span class="eyebrow">Le problème</span>
+    <h2 id="titre-probleme">Tu as la carte d'abonnement. Il te manque le mode d'emploi.</h2>
+    <p>Tu as pris un abonnement en salle. Les premières fois, tu as tourné entre le tapis de course et deux machines que tu connaissais à peu près. Tu as regardé des vidéos, enregistré des programmes, et une fois sur place, tu ne savais plus par quoi commencer.</p>
+    <p>La zone des haltères te semble réservée aux habitués. Tu as peur de mal faire un mouvement, de te faire mal au dos, ou simplement d'avoir l'air perdu devant tout le monde. Alors tu restes sur le cardio, ou tu ne viens plus.</p>
+    <p>Je vois ça chaque semaine en salle depuis 5 ans. Deux choses te bloquent presque toujours : personne ne t'a appris les gestes dans l'ordre, et personne ne t'a aidé à apprivoiser le lieu.</p>
+    <p class="punch">Feu Vert s'attaque aux deux.</p>
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je veux apprendre les bases dans l'ordre <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 3. MÉCANISME -->
+<section class="section-grey" id="mecanisme" aria-labelledby="titre-mecanisme">
+  <div class="wrap">
+    <span class="eyebrow">Le mécanisme Feu Vert</span>
+    <h2 id="titre-mecanisme">Rouge, orange, vert : tu sais toujours où tu en es</h2>
+
+    <h3>Les 8 gestes de base</h3>
+    <ol class="gestures">
+      <li><span class="name">Squat gobelet</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Soulevé de terre jambes tendues (roumain)</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Rowing haltère</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Développé haltères</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Fente</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Gainage</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Tirage (poulie)</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+      <li><span class="name">Hip thrust</span><span class="lights is-r" role="img" aria-label="Démarre au rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+    </ol>
+
+    <h3>Comment un geste passe au vert :</h3>
+    <ol class="steps">
+      <li class="step r"><span class="bulb" aria-hidden="true"></span><div><h3>Rouge</h3><p>Tu découvres le geste. Tu le travailles léger, avec les consignes en vidéo.</p></div></li>
+      <li class="step o"><span class="bulb" aria-hidden="true"></span><div><h3>Orange</h3><p>Tu te filmes et tu m'envoies la vidéo sur WhatsApp. Je te réponds sur WhatsApp avec une correction précise (placement, amplitude, respiration). Tu ajustes.</p></div></li>
+      <li class="step g"><span class="bulb" aria-hidden="true"></span><div><h3>Vert</h3><p>Le geste est propre et régulier sur plusieurs séries. Je le valide dans ton Passeport Feu Vert.</p></div></li>
+    </ol>
+
+    <div class="rule">
+      <strong>La règle qui change tout :</strong>
+      <p>tant qu'un geste n'est pas vert, la charge reste la même. Tu progresses en technique d'abord, en poids ensuite. Personne ne te pousse à soulever lourd avant que tu sois prêt.</p>
+    </div>
+
+    <div class="pass-wrap">
+      <div>
+        <h3>En parallèle, 4 missions salle</h3>
+        <p>La technique ne suffit pas si tu as l'impression d'être observé. Chaque mission est une étape concrète, accompagnée d'un court exercice de préparation mentale :</p>
+        <ol class="missions">
+          <li><strong>Heure creuse</strong> : faire ta séance complète quand la salle est calme.</li>
+          <li><strong>Zone principale</strong> : t'installer dans l'espace haltères au lieu de rester en périphérie.</li>
+          <li><strong>Demander un poste</strong> : demander à quelqu'un s'il a bientôt fini, ou s'il est possible d'alterner.</li>
+          <li><strong>Heure pleine</strong> : faire une séance complète à l'heure où il y a du monde.</li>
+        </ol>
+        <p>Tu avances à ton rythme. Une mission ratée se refait la semaine suivante, sans jugement.</p>
+      </div>
+
+      <!-- Passeport illustré (exemple visuel, pas une donnée réelle) -->
+      <figure class="passport" aria-labelledby="pass-cap">
+        <header>
+          <div><div class="ptitle">Passeport Feu Vert</div><div class="psub">Exemple</div></div>
+          <svg width="40" height="24" viewBox="0 0 290 78" aria-hidden="true"><g fill="#FFD500"><rect x="0" y="21" width="19" height="37"/><rect x="19" y="0" width="48" height="78"/><rect x="67" y="29" width="155" height="20"/><rect x="222" y="0" width="48" height="78"/><rect x="270" y="21" width="20" height="37"/></g></svg>
+        </header>
+        <ul>
+          <li>Squat gobelet <span class="lights is-g" role="img" aria-label="vert"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Soulevé de terre roumain <span class="lights is-g" role="img" aria-label="vert"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Rowing haltère <span class="lights is-g" role="img" aria-label="vert"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Développé haltères <span class="lights is-o" role="img" aria-label="orange"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Fente <span class="lights is-o" role="img" aria-label="orange"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Gainage <span class="lights is-o" role="img" aria-label="orange"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Tirage (poulie) <span class="lights is-r" role="img" aria-label="rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+          <li>Hip thrust <span class="lights is-r" role="img" aria-label="rouge"><i class="r"></i><i class="o"></i><i class="g"></i></span></li>
+        </ul>
+        <div class="level">
+          <div class="lv-top"><span>3 gestes au vert</span><span>Niveau 2 — Bases</span></div>
+          <div class="lv-bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        </div>
+        <figcaption class="pass-caption" id="pass-cap">Illustration d'un Passeport Feu Vert en cours de cycle : 3 gestes au vert, 3 à l'orange, 2 au rouge.</figcaption>
+      </figure>
+    </div>
+
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 3 bis. CE QUI CHANGE -->
+<section class="section-dark" aria-labelledby="titre-outils">
+  <div class="wrap">
+    <span class="eyebrow">Ce qui change de ce que tu connais</span>
+    <h2 id="titre-outils">4 outils pour tenir sur la durée</h2>
+    <p class="muted narrow">La plupart des programmes te donnent des séances et te laissent te débrouiller avec. Feu Vert ajoute de quoi rester régulière, même les semaines difficiles.</p>
+    <div class="tools">
+      <article class="tool">
+        <span class="num" aria-hidden="true">1</span>
+        <h3>Des niveaux liés à tes gestes</h3>
+        <p>Ton Passeport compte 4 niveaux. Tu montes de niveau quand de nouveaux gestes passent au vert :</p>
+        <ul class="levels">
+          <li><span class="tag">Niveau 1</span><span>Démarrage : tes premiers gestes filmés et corrigés.</span></li>
+          <li><span class="tag">Niveau 2</span><span>Bases : 2 gestes au vert.</span></li>
+          <li><span class="tag">Niveau 3</span><span>Autonomie : 5 gestes au vert.</span></li>
+          <li><span class="tag">Niveau 4</span><span>Feu Vert : les 8 gestes au vert.</span></li>
+        </ul>
+        <!-- Seuils des niveaux (2 / 5 / 8 gestes) à confirmer par Marien avant mise en ligne. -->
+        <p>Ton niveau mesure ta technique. Il ne dit rien de ton poids ni de ton physique.</p>
+      </article>
+      <article class="tool">
+        <span class="num" aria-hidden="true">2</span>
+        <h3>Un tableau de régularité</h3>
+        <p>Dans le groupe, un tableau affiche les séances faites et les check-ins envoyés. Il récompense le fait de venir, jamais la charge soulevée, le poids ou l'apparence. Tu choisis d'y apparaître ou non, sous ton prénom ou un pseudo.</p>
+      </article>
+      <article class="tool">
+        <span class="num" aria-hidden="true">3</span>
+        <h3>Le check-in du lundi</h3>
+        <p>Chaque lundi, tu postes 3 lignes dans le fil de la semaine : tes séances faites, 1 victoire, 1 blocage. Je réponds à chaque check-in dans la journée.</p>
+      </article>
+      <article class="tool">
+        <span class="num" aria-hidden="true">4</span>
+        <h3>Un binôme pour la durée du cycle</h3>
+        <p>Au démarrage, je t'associe à une autre personne de la cohorte, selon votre objectif et vos créneaux d'entraînement. Vous vous tenez au courant de vos séances, vous vous relancez si besoin. Ton binôme t'encourage ; les corrections restent mon travail.</p>
+      </article>
+    </div>
+    <div class="cta-row"><a class="btn js-cta" href="#questionnaire">Je réserve ma place <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 4. DÉROULÉ -->
+<section class="section-grey" aria-labelledby="titre-deroule">
+  <div class="wrap">
+    <span class="eyebrow">Le déroulé d'un cycle de 6 semaines</span>
+    <h2 id="titre-deroule">6 semaines, semaine par semaine</h2>
+    <p class="narrow">Deux parcours au choix selon ton point de départ : <strong>Reprise</strong> (zéro base ou long arrêt) et <strong>Bases+</strong> (moins de 6 mois de pratique). Je t'oriente vers l'un ou l'autre après ton questionnaire.</p>
+    <ol class="timeline">
+      <li><span class="wk" aria-hidden="true">S1</span><h3>Semaine 1 — Point de départ.</h3><p>Accès au programme dans l'application, présentation de ton binôme et de tes objectifs de départ (premier check-in le lundi 25 janvier). Tu filmes tes premiers essais. Les 8 gestes démarrent au rouge. Mission 1 : heure creuse.</p><div class="chips"><span class="chip y">Mission 1</span></div></li>
+      <li><span class="wk" aria-hidden="true">S2</span><h3>Semaine 2 — Gestes 1 à 4.</h3><p>Premières corrections vidéo sur squat gobelet, soulevé de terre roumain, rowing et développé. Live collectif de la semaine sur le placement.</p></li>
+      <li><span class="wk" aria-hidden="true">S3</span><h3>Semaine 3 — Gestes 5 à 8.</h3><p>Corrections sur fente, gainage, tirage poulie et hip thrust. Mission 2 : zone principale.</p><div class="chips"><span class="chip y">Mission 2</span></div></li>
+      <li><span class="wk" aria-hidden="true">S4</span><h3>Semaine 4 — Premiers verts.</h3><p>La charge augmente uniquement sur les gestes validés. Une séance bonus s'ajoute. Mission 3 : demander un poste.</p><div class="chips"><span class="chip y">Mission 3</span><span class="chip">+1 séance bonus</span></div></li>
+      <li><span class="wk" aria-hidden="true">S5</span><h3>Semaine 5 — Consolidation.</h3><p>Les gestes encore orange reçoivent la priorité des corrections. Mission 4 : heure pleine.</p><div class="chips"><span class="chip y">Mission 4</span></div></li>
+      <li><span class="wk" aria-hidden="true">S6</span><h3>Semaine 6 — Bilan.</h3><p>Vidéo de fin sur tes gestes, point sur ton Passeport et ton niveau, et je te dis honnêtement ce qui te serait le plus utile ensuite.</p></li>
+    </ol>
+    <p class="monday">Chaque lundi, du début à la fin : check-in, réponse de ma part, mise à jour du tableau de régularité.</p>
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place fondatrice <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 5. INCLUS / LIMITES -->
+<section class="section-light" aria-labelledby="titre-inclus">
+  <div class="wrap">
+    <span class="eyebrow">Ce qui est inclus, et les limites que j'assume</span>
+    <h2 id="titre-inclus">Ce que tu reçois</h2>
+    <div class="two">
+      <div class="card">
+        <ul class="ticks">
+          <li><span><strong>Un programme commun qui avance chaque semaine</strong>, dans mon application : 2 séances de 45 à 50 minutes (+ 1 séance bonus de la semaine 4 à la semaine 6), avec deux parcours, Reprise et Bases+, et des options si une machine est prise ou si tu as peu de temps.</span></li>
+          <li><span><strong>Des corrections individuelles, en message privé sur WhatsApp</strong> : tu te filmes, tu m'envoies ta vidéo en privé, je te réponds en privé avec une correction rien que pour toi, sous 48 h ouvrées (2 vidéos par semaine). Le programme est le même pour tout le groupe ; les corrections, elles, sont personnelles.</span></li>
+          <li><span><strong>Un groupe privé WhatsApp</strong> réservé à la cohorte, pour échanger, s'entraider, s'encourager et se challenger entre membres.</span></li>
+          <li><span>Ton Passeport Feu Vert : l'état de chacun de tes 8 gestes et ton niveau (1 à 4), mis à jour après chaque correction.</span></li>
+          <li><span>Le check-in du lundi, avec une réponse de ma part à chaque membre.</span></li>
+          <li><span>Un binôme de cohorte, choisi selon ton objectif et tes créneaux, et le tableau de régularité (participation facultative).</span></li>
+          <li><span>1 live par semaine (45 min) : démonstrations, réponses à vos questions. Replay disponible.</span></li>
+          <li><span>1 court module par semaine pour te sentir à l'aise en salle, lié à la mission en cours.</span></li>
+        </ul>
+      </div>
+      <div class="card dark">
+        <h3>Ce que Feu Vert ne contient pas (volontairement)</h3>
+        <p>Pour que le prix reste accessible et que je tienne mes délais de réponse, je fixe des limites claires :</p>
+        <ul class="ticks minus">
+          <li><span>Le programme est commun à toute la cohorte, avec deux parcours. Il n'est pas réécrit pour chaque personne.</span></li>
+          <li><span>Pas de messagerie privée illimitée : en privé, on échange autour de tes vidéos de correction ; les autres questions vont dans le groupe ou au live, où elles servent à tout le monde.</span></li>
+          <li><span>Pas de plan alimentaire.</span></li>
+          <li><span>Pas de visio individuelle.</span></li>
+          <li><span>Pas plus de 2 corrections vidéo par semaine.</span></li>
+        </ul>
+        <p style="margin-top:16px">Si tu as besoin d'un suivi sur mesure, c'est le rôle de mon coaching individuel. Je te le dirai franchement si c'est ton cas.</p>
+      </div>
+    </div>
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 6. MARIEN -->
+<section class="section-grey" aria-labelledby="titre-coach">
+  <div class="wrap coach">
+    <figure class="photo" style="margin:0">
+      <div class="ph" aria-hidden="true"><div><svg viewBox="0 0 290 78"><g fill="#FFD500"><rect x="0" y="21" width="19" height="37"/><rect x="19" y="0" width="48" height="78"/><rect x="67" y="29" width="155" height="20"/><rect x="222" y="0" width="48" height="78"/><rect x="270" y="21" width="20" height="37"/></g></svg>COACH NEIRAM</div></div>
+      <!-- PHOTO : déposer marien.jpg (portrait 4:5, ~1000 x 1250 px, < 250 Ko) à côté de ce fichier. -->
+      <img src="feu-vert/marien.jpg" alt="Marien Pelissier, alias Coach Neiram, coach sportif à Clermont-Ferrand" width="800" height="1000" loading="lazy" onerror="this.remove()">
+    </figure>
+    <div>
+      <span class="eyebrow">Qui est Marien</span>
+      <h2 id="titre-coach">Ton coach : Marien, alias Coach Neiram</h2>
+      <p>Je suis coach sportif indépendant depuis 5 ans, en salle à Clermont-Ferrand. Diplômé d'un DEUST Métiers de la Forme, certifié Pilates et formé en préparation mentale.</p>
+      <p>L'essentiel de mes clients débutent en salle. J'ai accompagné une centaine de personnes : des reprises après plusieurs années d'arrêt, des personnes stressées par le regard des autres, des emplois du temps impossibles. Feu Vert reprend ce que je fais avec eux en face à face, sous une forme collective et en ligne.</p>
+      <!-- Nombre d'avis Google à vérifier le jour de la mise en ligne. -->
+      <p class="rating"><span>Ce que disent mes clients :</span> <span class="stars" aria-hidden="true">★★★★★</span> <span>51 avis Google, note 5/5.</span></p>
+      <!-- TÉMOIGNAGE 1 À AJOUTER — client débutant en salle, avec accord écrit.
+           Modèle : <blockquote class="card"><p>« Texte du témoignage »</p><footer>— Prénom, débutante en salle</footer></blockquote> -->
+      <!-- TÉMOIGNAGE 2 À AJOUTER — personne en reprise après un long arrêt, avec accord écrit. -->
+      <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. POUR QUI -->
+<section class="section-light" aria-labelledby="titre-pourqui">
+  <div class="wrap">
+    <span class="eyebrow">Pour qui / pas pour qui</span>
+    <h2 id="titre-pourqui" class="sr-only">Pour qui est Feu Vert</h2>
+    <div class="two fit-grid">
+      <div class="card">
+        <div class="fit-head"><span class="lights is-g" aria-hidden="true"><i class="r"></i><i class="o"></i><i class="g"></i></span><h3>Feu Vert est fait pour toi si…</h3></div>
+        <ul class="fit yes">
+          <li><span>Tu as un abonnement en salle (ou tu vas en prendre un) et tu ne sais pas quoi y faire.</span></li>
+          <li><span>Tu reprends après une longue pause et tu veux repartir sur des bases propres.</span></li>
+          <li><span>Tu te sens mal à l'aise dans la zone musculation, que tu sois un homme ou une femme : Feu Vert est ouvert à tout le monde.</span></li>
+          <li><span>Tu peux bloquer 2 créneaux de 45 à 50 minutes par semaine.</span></li>
+          <li><span>Tu acceptes de te filmer pour être corrigé, et de faire un check-in chaque lundi.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="fit-head"><span class="lights is-r" aria-hidden="true"><i class="r"></i><i class="o"></i><i class="g"></i></span><h3>Feu Vert ne te conviendra pas si…</h3></div>
+        <ul class="fit no">
+          <li><span>Tu t'entraînes uniquement à la maison.</span></li>
+          <li><span>Tu pratiques déjà régulièrement depuis plus de 6 mois et tu cherches une programmation avancée.</span></li>
+          <li><span>Tu veux un programme et un plan alimentaire construits rien que pour toi : vois plutôt mon coaching individuel.</span></li>
+          <li><span>Tu as une contre-indication médicale et pas encore l'accord de ton médecin.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je vérifie si c'est pour moi (questionnaire 2 min) <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- 8. TARIFS -->
+<section class="section-grey" id="tarifs" aria-labelledby="titre-tarifs">
+  <div class="wrap">
+    <span class="eyebrow">Tarifs</span>
+    <h2 id="titre-tarifs">Cohorte fondatrice : 59&nbsp;€ le cycle</h2>
+    <div class="price-wrap">
+      <article class="price-main" aria-labelledby="titre-fondatrice">
+        <span class="tag-top"><span class="js-places">12</span>&nbsp;<span class="js-places-label">places restantes</span></span>
+        <h3 id="titre-fondatrice">Cohorte fondatrice (janvier 2027)</h3>
+        <div class="amount"><b>59&nbsp;€</b><span>pour le premier cycle de 6 semaines</span></div>
+        <div class="lock">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2" fill="#0D0D0D"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="#0D0D0D" stroke-width="2.4"/></svg>
+          <span>Prix verrouillé pendant 6 cycles</span>
+        </div>
+        <ul class="ticks">
+          <li><span>12 places.</span></li>
+          <li><span><strong>59&nbsp;€</strong> pour le premier cycle de 6 semaines.</span></li>
+          <li><span><strong>Prix verrouillé :</strong> tu gardes 59&nbsp;€ par cycle pendant tes 6 premiers cycles (36 semaines), tant que tu restes inscrit sans interruption. Si tu fais une pause, tu reviens au tarif en vigueur.</span></li>
+          <li><span>Témoignage facultatif : à la fin du cycle, je te demanderai si tu veux bien partager ton retour (écrit, ou vidéo d'un geste, avec un accord signé). Ton tarif ne dépend pas de ta réponse.</span></li>
+          <li><span>Démarrage : lundi 18 janvier 2027 (fin du cycle le dimanche 28 février). Réservations du vendredi 1er au dimanche 10 janvier 2027 inclus.</span></li>
+          <li><span><strong>La cohorte ouvre si au moins 8 personnes s'engagent.</strong> Tant que ce seuil n'est pas atteint, je ne construis rien et tu ne paies rien. Si le seuil est atteint, je t'envoie le lien de paiement. S'il ne l'est pas, je te préviens par message.</span></li>
+        </ul>
+        <div class="cta-row"><a class="btn btn-block js-cta" href="#questionnaire">Je réserve ma place fondatrice <span class="arrow" aria-hidden="true">→</span></a></div>
+      </article>
+      <!-- Bloc « dépôt d'engagement 20 € » volontairement absent : non retenu pour la cohorte 1 (à tester en cohorte 2). -->
+      <div>
+        <h3>Tarif après la cohorte fondatrice</h3>
+        <div class="price-grid">
+          <div class="price-card"><span class="l">1 cycle de 6 semaines<span class="s">sans engagement</span></span><span class="p">89&nbsp;€</span></div>
+          <div class="price-card"><span class="l">3 cycles<span class="s">18 semaines</span></span><span class="p">229&nbsp;€</span></div>
+          <div class="price-card"><span class="l">6 cycles<span class="s">36 semaines</span></span><span class="p">399&nbsp;€</span></div>
+        </div>
+        <!-- Mention TVA à confirmer par Marien (franchise en base, art. 293 B du CGI). -->
+        <p class="legal-note">Paiement par lien sécurisé Stripe. TVA non applicable, art. 293 B du CGI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FAQ -->
+<section class="section-light" aria-labelledby="titre-faq">
+  <div class="wrap narrow">
+    <span class="eyebrow">FAQ</span>
+    <h2 id="titre-faq">Tes questions</h2>
+    <div class="faq">
+      <details><summary>Le programme est le même pour tout le groupe : il sera adapté à moi ?</summary><div class="ans"><p>La base est commune : tout le monde suit la même progression, semaine après semaine. Tu choisis ton parcours (Reprise ou Bases+), tes charges restent les tiennes, et chaque séance prévoit des options si une machine est prise ou si ton temps est compté. Surtout, tes corrections sont individuelles : c'est ta vidéo que je regarde, et je te réponds en privé sur WhatsApp. Si je vois que ta situation demande un programme construit uniquement pour toi, je te le dirai franchement.</p></div></details>
+      <details><summary>À quoi sert le groupe WhatsApp ?</summary><div class="ans"><p>C'est un groupe privé, réservé à la cohorte. On y échange, on s'entraide, on s'encourage et on se lance des défis. Je l'anime avec les annonces de la semaine. Tes vidéos et tes corrections, elles, restent entre nous, en message privé.</p></div></details>
+      <details><summary>Comment se passe le coaching à distance ?</summary><div class="ans"><p>Tout se fait à distance : tu t'entraînes dans ta salle avec le programme dans l'application. Pour chaque geste, tu te filmes et tu m'envoies la vidéo en message privé sur WhatsApp ; je te réponds sur WhatsApp avec ta correction, sous 48 h ouvrées (2 vidéos par semaine). Les lives, le check-in du lundi et le groupe se passent aussi en ligne. Aucune séance en présentiel n'est incluse.</p></div></details>
+      <details><summary>Quel matériel me faut-il ?</summary><div class="ans"><p>Un accès à une salle de musculation classique : haltères, banc, poulie. Ton téléphone pour te filmer, et l'application de coaching (lien envoyé à l'inscription).</p></div></details>
+      <details><summary>Je n'ai jamais fait de musculation. Je peux venir ?</summary><div class="ans"><p>Oui. Le parcours Reprise part de zéro. Tous les gestes démarrent au rouge, à charge légère, et tu montes seulement quand je valide.</p></div></details>
+      <details><summary>Combien de temps dure une séance ?</summary><div class="ans"><p>Entre 45 et 50 minutes, 2 fois par semaine. Une séance bonus est proposée de la semaine 4 à la semaine 6, elle reste facultative.</p></div></details>
+      <details><summary>Je m'entraîne à la maison, est-ce adapté ?</summary><div class="ans"><p>Feu Vert demande un accès à une salle : certains gestes utilisent une poulie, et les 4 missions se passent sur place. Si tu t'entraînes chez toi, écris-moi, je t'orienterai vers une autre solution.</p></div></details>
+      <details><summary>Je suis déjà en suivi présentiel avec toi. Je peux rejoindre Feu Vert ?</summary><div class="ans"><p>Feu Vert n'est pas ouvert aux clients en suivi présentiel actif. Ton suivi actuel couvre déjà tout ce que contient le programme, et davantage.</p></div></details>
+      <details><summary>Que se passe-t-il si la cohorte n'ouvre pas ?</summary><div class="ans"><p>Si moins de 8 personnes s'engagent avant le dimanche 10 janvier 2027, la cohorte de janvier n'ouvre pas. Tu ne paies rien, je te préviens par message, et tes données sont supprimées si tu le demandes.</p></div></details>
+      <!-- FAQ 7 : conditions de rétractation si le cycle démarre avant la fin des 14 jours à aligner sur les CGV et le contrat coaching en ligne avant mise en ligne. -->
+      <details><summary>Comment se passent le paiement et le remboursement ?</summary><div class="ans"><p>Le paiement se fait uniquement une fois le seuil de 8 personnes atteint, par lien sécurisé. Tu disposes d'un droit de rétractation de 14 jours après ton paiement.</p></div></details>
+      <details><summary>J'ai une douleur, une blessure ou un problème de santé.</summary><div class="ans"><p>Dans ce cas, demande l'avis de ton médecin avant de commencer. Feu Vert est un programme d'entraînement, il ne remplace pas un suivi médical ou kiné.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- 10. CTA FINAL -->
+<section class="section-yellow final" id="reserver" aria-labelledby="titre-final">
+  <div class="wrap narrow">
+    <span class="eyebrow">Cohorte fondatrice</span>
+    <h2 id="titre-final">Ta place dans la cohorte de janvier</h2>
+    <p>12 places à 59&nbsp;€. La cohorte ouvre à partir de 8 personnes engagées. Remplis le questionnaire : 2 minutes, sans paiement. Je te réponds personnellement sous 48 h ouvrées.</p>
+    <p><strong><span class="js-places">12</span> <span class="js-places-label">places restantes</span> sur <span class="js-total">12</span></strong></p>
+    <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place fondatrice <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     QUESTIONNAIRE DE SECOURS (sans serveur)
+     Tant que QUESTIONNAIRE_URL vaut "#questionnaire", tous les boutons mènent ici
+     et l'envoi ouvre l'application email de la personne (mailto:) avec ses réponses.
+
+     POUR BRANCHER LE FORMULAIRE HÉBERGÉ (TinyPages, Tally…) :
+       1. Crée le formulaire avec les mêmes 9 questions et le même texte de consentement.
+       2. En haut de ce fichier, remplace :
+            const QUESTIONNAIRE_URL = "#questionnaire";
+          par l'adresse du formulaire, par exemple :
+            const QUESTIONNAIRE_URL = "https://tally.so/r/XXXXXX";
+       3. C'est tout : tous les boutons pointent alors vers le formulaire hébergé,
+          et cette section de secours se masque automatiquement.
+     ====================================================================== -->
+<section class="section-grey" id="questionnaire" aria-labelledby="titre-questionnaire">
+  <div class="wrap narrow">
+    <span class="eyebrow">Questionnaire d'admission</span>
+    <h2 id="titre-questionnaire">Réserve ta place fondatrice</h2>
+    <p>Quelques questions pour savoir si Feu Vert te correspond et dans quel parcours te placer. Aucun paiement à cette étape.</p>
+
+    <form class="form-card" id="fv-form" novalidate>
+      <div class="form-error" id="form-error" role="alert" tabindex="-1"></div>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">1</span>Tes coordonnées</legend>
+        <div class="grid-2">
+          <label class="field">Prénom <span class="req" aria-hidden="true">*</span><input type="text" name="prenom" autocomplete="given-name" required aria-required="true"></label>
+          <label class="field">Email <span class="req" aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
+          <label class="field">Téléphone (optionnel)<input type="tel" name="telephone" autocomplete="tel"></label>
+          <label class="field">Instagram (optionnel)<input type="text" name="instagram" placeholder="@…" autocapitalize="off"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">2</span>Où en es-tu aujourd'hui en musculation ? <span class="req" aria-hidden="true">*</span></legend>
+        <label class="opt"><input type="radio" name="niveau" value="Je n'ai jamais pratiqué" required> Je n'ai jamais pratiqué</label>
+        <label class="opt"><input type="radio" name="niveau" value="J'ai arrêté depuis plus d'un an"> J'ai arrêté depuis plus d'un an</label>
+        <label class="opt"><input type="radio" name="niveau" value="Je pratique depuis moins de 6 mois"> Je pratique depuis moins de 6 mois</label>
+        <label class="opt"><input type="radio" name="niveau" value="Je pratique depuis plus de 6 mois"> Je pratique depuis plus de 6 mois</label>
+      </fieldset>
+
+      <fieldset id="q3">
+        <legend><span class="qn" aria-hidden="true">3</span>Qu'est-ce qui te bloque le plus en salle ? <span class="help-inline">(3 choix max)</span></legend>
+        <label class="opt"><input type="checkbox" name="blocage" value="Je ne sais pas quoi faire"> Je ne sais pas quoi faire</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="J'ai peur de mal faire un mouvement"> J'ai peur de mal faire un mouvement</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="Le regard des autres"> Le regard des autres</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="Je ne sais pas utiliser les machines ou les haltères"> Je ne sais pas utiliser les machines ou les haltères</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="Je manque de régularité"> Je manque de régularité</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="Mes horaires"> Mes horaires</label>
+        <label class="opt"><input type="checkbox" name="blocage" value="Autre" id="blocage-autre"> Autre</label>
+        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="blocage_autre"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">4</span>Ton objectif principal pour les 6 semaines ? <span class="req" aria-hidden="true">*</span></legend>
+        <p class="help">Sert aussi à l'appariement des binômes.</p>
+        <label class="opt"><input type="radio" name="objectif" value="Apprendre les bons gestes" required> Apprendre les bons gestes</label>
+        <label class="opt"><input type="radio" name="objectif" value="Me sentir à l'aise en salle"> Me sentir à l'aise en salle</label>
+        <label class="opt"><input type="radio" name="objectif" value="Reprendre une routine"> Reprendre une routine</label>
+        <label class="opt"><input type="radio" name="objectif" value="Me renforcer"> Me renforcer</label>
+        <label class="opt"><input type="radio" name="objectif" value="Autre"> Autre</label>
+        <label class="field inline-other">Précise (si « Autre »)<input type="text" name="objectif_autre"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">5</span>Quand peux-tu t'entraîner ? (2 séances de 45-50 min par semaine)</legend>
+        <p class="help">Sert aussi à te trouver un binôme aux horaires proches.</p>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Tôt le matin (avant 9 h)"> Tôt le matin (avant 9 h)</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Midi (11 h 30-14 h)"> Midi (11 h 30-14 h)</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Après-midi (14 h-17 h)"> Après-midi (14 h-17 h)</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Soir (17 h-20 h)"> Soir (17 h-20 h)</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Tard le soir (après 20 h)"> Tard le soir (après 20 h)</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Week-end"> Week-end</label>
+        <label class="opt"><input type="checkbox" name="creneaux" value="Je ne suis pas sûr de pouvoir bloquer 2 séances"> Je ne suis pas sûr de pouvoir bloquer 2 séances</label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">6</span>Où t'entraînes-tu, avec quel matériel ? <span class="req" aria-hidden="true">*</span></legend>
+        <label class="opt"><input type="radio" name="lieu" value="En salle, abonnement en cours" required> En salle, abonnement en cours</label>
+        <label class="opt"><input type="radio" name="lieu" value="En salle, abonnement prévu avant janvier"> En salle, abonnement prévu avant janvier</label>
+        <label class="opt"><input type="radio" name="lieu" value="À la maison uniquement"> À la maison uniquement</label>
+        <label class="field">Nom de ta salle ou matériel disponible (facultatif)<input type="text" name="salle"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">7</span>As-tu une contre-indication médicale à la pratique sportive (blessure, douleur, pathologie, grossesse…) ? <span class="req" aria-hidden="true">*</span></legend>
+        <div class="grid-2">
+          <label class="opt"><input type="radio" name="contre_indication" value="Oui" required> Oui</label>
+          <label class="opt"><input type="radio" name="contre_indication" value="Non"> Non</label>
+        </div>
+        <p class="alert" id="alert-q7" aria-live="polite">Un avis médical favorable sera demandé avant de commencer. Ne donne aucun détail ici, nous en parlerons directement.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="qn" aria-hidden="true">8</span>Es-tu actuellement en suivi présentiel avec Marien ?</legend>
+        <label class="opt"><input type="checkbox" name="presentiel" value="Oui" id="q8"> Je suis déjà client en suivi présentiel avec Marien.</label>
+        <p class="alert" id="alert-q8" aria-live="polite">Feu Vert n'est pas ouvert aux suivis présentiels actifs. Ta demande sera tout de même lue, je reviendrai vers toi.</p>
+      </fieldset>
+
+      <fieldset class="consent">
+        <legend><span class="qn" aria-hidden="true">9</span>Consentement</legend>
+        <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni partagées. Elles sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. J'accepte aussi le traitement de ma réponse à la question 7 (contre-indication médicale), utilisée uniquement pour vérifier que je peux commencer en sécurité. <span class="req" aria-hidden="true">*</span></span></label>
+        <p class="help" style="margin-top:12px">Facultatif, modifiable à tout moment :</p>
+        <label class="opt"><input type="checkbox" name="tableau" value="Oui"> <span>J'accepte que mon prénom (ou le pseudo de mon choix) et ma régularité (séances faites, check-ins envoyés, missions validées) apparaissent dans le tableau de régularité visible par les membres de la cohorte.</span></label>
+        <label class="field">Pseudo souhaité (optionnel)<input type="text" name="pseudo"></label>
+        <label class="opt"><input type="checkbox" name="binome" value="Oui"> <span>J'accepte que mon prénom, mon objectif et mes créneaux soient communiqués à mon binôme, ainsi que mon numéro de téléphone si je choisis WhatsApp pour échanger avec lui.</span></label>
+        <p class="help" style="margin-top:12px"><a href="cgv-feu-vert.html#confidentialite">Politique de confidentialité</a></p>
+      </fieldset>
+
+      <button type="submit" class="btn btn-dark btn-block">Envoyer ma demande <span class="arrow" aria-hidden="true">→</span></button>
+      <p class="help" style="margin-top:12px">Tes réponses me parviennent directement par email, je les lis moi-même. Tu peux aussi écrire à <a href="mailto:coachingbymarien@gmail.com">coachingbymarien@gmail.com</a>.</p>
+      <div class="form-ok" id="form-ok" role="status"></div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap"><img src="feu-vert/logo-coach-neiram-blanc.png" alt="Coach Neiram" style="height:56px;width:auto"></div>
+  <div class="wrap">
+    <div>
+      <a class="logo" href="#contenu" aria-label="Coach Neiram, haut de page">
+        <svg viewBox="0 0 290 78" aria-hidden="true" focusable="false"><g fill="#FFD500"><rect x="0" y="21" width="19" height="37"/><rect x="19" y="0" width="48" height="78"/><rect x="67" y="29" width="155" height="20"/><rect x="222" y="0" width="48" height="78"/><rect x="270" y="21" width="20" height="37"/></g></svg>
+        <span>COACH NEIRAM</span>
+      </a>
+      <!-- Mention TVA à confirmer par Marien. -->
+      <p style="margin:10px 0 4px">Marien Pelissier, EI — TVA non applicable, art. 293 B du CGI</p>
+      <p style="margin:0">Contact : <a href="mailto:coachingbymarien@gmail.com">coachingbymarien@gmail.com</a></p>
+    </div>
+    <!-- Liens légaux : pages à créer (cgv-feu-vert.html avec ancres #mentions-legales et #confidentialite). -->
+    <nav aria-label="Informations légales">
+      <ul>
+        <li><a href="cgv-feu-vert.html#mentions-legales">Mentions légales</a></li>
+        <li><a href="cgv-feu-vert.html">CGV</a></li>
+        <li><a href="cgv-feu-vert.html#confidentialite">Confidentialité</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky" aria-hidden="true">
+  <div class="s-info"><strong><span class="js-places">12</span> places</strong>59&nbsp;€ / cycle</div>
+  <a class="btn js-cta" href="#questionnaire" tabindex="-1">Je réserve ma place fondatrice</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var EMAIL = "coachingbymarien@gmail.com";
+
+  /* ---- Compteur de places ---- */
+  var n = Math.max(0, parseInt(PLACES_RESTANTES, 10) || 0);
+  document.querySelectorAll(".js-places").forEach(function(el){ el.textContent = n; });
+  document.querySelectorAll(".js-total").forEach(function(el){ el.textContent = PLACES_TOTAL; });
+  document.querySelectorAll(".js-places-label").forEach(function(el){
+    el.textContent = n === 0 ? "place restante — cohorte complète" : (n === 1 ? "place restante" : "places restantes");
+  });
+
+  /* ---- Boutons CTA ---- */
+  var external = QUESTIONNAIRE_URL.charAt(0) !== "#";
+  document.querySelectorAll(".js-cta").forEach(function(a){
+    a.setAttribute("href", QUESTIONNAIRE_URL);
+    if (external) { a.setAttribute("rel", "noopener"); }
+  });
+  var qSection = document.getElementById("questionnaire");
+  if (external && qSection) { qSection.hidden = true; }
+
+  /* ---- Barre CTA mobile ---- */
+  var sticky = document.getElementById("sticky");
+  var hero = document.querySelector(".hero");
+  var hideZones = [document.getElementById("reserver"), qSection, document.querySelector("footer.site")];
+  if ("IntersectionObserver" in window && sticky && hero) {
+    var state = { heroVisible: true, zones: 0 };
+    var update = function(){
+      var show = !state.heroVisible && state.zones === 0;
+      sticky.classList.toggle("show", show);
+      sticky.setAttribute("aria-hidden", show ? "false" : "true");
+      sticky.querySelector("a").setAttribute("tabindex", show ? "0" : "-1");
+    };
+    new IntersectionObserver(function(e){ state.heroVisible = e[0].isIntersecting; update(); }).observe(hero);
+    var visible = new Set();
+    var zo = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) visible.add(en.target); else visible.delete(en.target); });
+      state.zones = visible.size; update();
+    });
+    hideZones.forEach(function(z){ if (z && !z.hidden) zo.observe(z); });
+  }
+
+  /* ---- Questionnaire de secours ---- */
+  var form = document.getElementById("fv-form");
+  if (!form) return;
+
+  // Q3 : 3 choix maximum
+  var q3 = form.querySelectorAll('input[name="blocage"]');
+  function limitQ3(){
+    var c = form.querySelectorAll('input[name="blocage"]:checked').length;
+    q3.forEach(function(cb){
+      var dis = c >= 3 && !cb.checked;
+      cb.disabled = dis;
+      cb.closest(".opt").classList.toggle("disabled", dis);
+    });
+  }
+  q3.forEach(function(cb){ cb.addEventListener("change", limitQ3); });
+
+  // Q7 / Q8 : messages conditionnels
+  var a7 = document.getElementById("alert-q7"), a8 = document.getElementById("alert-q8");
+  form.querySelectorAll('input[name="contre_indication"]').forEach(function(r){
+    r.addEventListener("change", function(){ a7.classList.toggle("show", r.value === "Oui" && r.checked); });
+  });
+  document.getElementById("q8").addEventListener("change", function(e){ a8.classList.toggle("show", e.target.checked); });
+
+  function val(name){ var el = form.elements[name]; return el ? (el.value || "").trim() : ""; }
+  function radio(name){ var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ""; }
+  function checks(name){ return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function(c){ return c.value; }); }
+
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var err = document.getElementById("form-error"), ok = document.getElementById("form-ok");
+    var missing = [];
+    if (!val("prenom")) missing.push("ton prénom (question 1)");
+    var mail = val("email");
+    if (!mail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) missing.push("un email valide (question 1)");
+    if (!radio("niveau")) missing.push("la question 2");
+    if (!radio("objectif")) missing.push("la question 4");
+    if (!radio("lieu")) missing.push("la question 6");
+    if (!radio("contre_indication")) missing.push("la question 7");
+    if (!form.elements["consentement"].checked) missing.push("le consentement obligatoire (question 9)");
+    if (missing.length){
+      err.textContent = "Il manque : " + missing.join(", ") + ".";
+      err.classList.add("show"); ok.classList.remove("show");
+      err.focus();
+      return;
+    }
+    err.classList.remove("show");
+
+    var blocages = checks("blocage");
+    if (blocages.indexOf("Autre") > -1 && val("blocage_autre")) blocages[blocages.indexOf("Autre")] = "Autre : " + val("blocage_autre");
+    var objectif = radio("objectif");
+    if (objectif === "Autre" && val("objectif_autre")) objectif = "Autre : " + val("objectif_autre");
+
+    var L = [];
+    L.push("Demande d'entrée — Feu Vert (cohorte fondatrice, janvier 2027)", "");
+    L.push("1. Coordonnées");
+    L.push("   Prénom : " + val("prenom"));
+    L.push("   Email : " + mail);
+    L.push("   Téléphone : " + (val("telephone") || "—"));
+    L.push("   Instagram : " + (val("instagram") || "—"), "");
+    L.push("2. Niveau en musculation : " + radio("niveau"));
+    L.push("3. Blocages : " + (blocages.join(" ; ") || "—"));
+    L.push("4. Objectif : " + objectif);
+    L.push("5. Créneaux : " + (checks("creneaux").join(" ; ") || "—"));
+    L.push("6. Lieu : " + radio("lieu") + (val("salle") ? " (" + val("salle") + ")" : ""));
+    L.push("7. Contre-indication médicale : " + radio("contre_indication"));
+    L.push("8. Suivi présentiel actif avec Marien : " + (form.elements["presentiel"].checked ? "Oui" : "Non"), "");
+    L.push("9. Consentements");
+    L.push("   Traitement des réponses (dont question 7) : Oui");
+    L.push("   Tableau de régularité : " + (form.elements["tableau"].checked ? "Oui" + (val("pseudo") ? " (pseudo : " + val("pseudo") + ")" : "") : "Non"));
+    L.push("   Partage avec le binôme : " + (form.elements["binome"].checked ? "Oui" : "Non"));
+
+    var subject = "Feu Vert — demande de " + val("prenom");
+    var texte = L.join("\r\n");
+    var mailtoHref = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(texte);
+    var btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; }
+    ok.textContent = "Envoi en cours…";
+    ok.classList.add("show");
+    // Envoi via FormSubmit (même service que le formulaire de contact du site).
+    // Activation unique : au premier envoi, FormSubmit envoie un email de confirmation à coachingbymarien@gmail.com.
+    fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ _subject: subject, _template: "box", _captcha: "false", prenom: val("prenom"), email: val("email"), reponses: texte })
+    }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(){
+        ok.textContent = "Merci " + val("prenom") + ", ta demande est bien partie. Je lis ta réponse moi-même et je te réponds sous 48 h ouvrées. Aucun paiement à cette étape.";
+        form.reset();
+      })
+      .catch(function(){
+        ok.textContent = "L'envoi automatique n'a pas abouti. Ton application email va s'ouvrir avec tes réponses : appuie sur « Envoyer ». Sinon, écris à " + EMAIL + ".";
+        window.location.href = mailtoHref;
+      })
+      .finally(function(){ if (btn) { btn.disabled = false; } });
+  });
+})();
+</script>
+</body>
+</html>
