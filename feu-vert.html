@@ -903,7 +903,10 @@
     var missing = [];
     if (!val("prenom")) missing.push("ton prénom (question 1)");
     var mail = val("email");
-    if (!mail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) missing.push("un email valide (question 1)");
+    // Mêmes règles que le Worker (route /reservation-feu-vert) : sinon le serveur refuse et l'envoi bascule sur l'email.
+    if (!mail || !/^[^\s@<>"(),;:]+@[^\s@<>"(),;:]+\.[^\s@<>"(),;:]{2,}$/.test(mail)) missing.push("un email valide (question 1)");
+    var tel = val("telephone");
+    if (tel && !/^[0-9+ ().-]{6,30}$/.test(tel)) missing.push("un téléphone composé uniquement de chiffres, espaces, + . - ( ) (question 1, ou laisse-le vide)");
     if (!radio("niveau")) missing.push("la question 2");
     if (!radio("objectif")) missing.push("la question 4");
     if (!radio("lieu")) missing.push("la question 6");
