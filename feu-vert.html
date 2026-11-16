@@ -670,7 +670,7 @@
   <div class="wrap narrow">
     <span class="eyebrow">Cohorte fondatrice</span>
     <h2 id="titre-final">Ta place dans la cohorte de janvier</h2>
-    <p>12 places à 59&nbsp;€. La cohorte ouvre à partir de 8 personnes engagées. Remplis le questionnaire : 2 minutes, sans paiement. Je te réponds personnellement sous 48 h ouvrées.</p>
+    <p>12 places à 59&nbsp;€. La cohorte ouvre à partir de 8 personnes engagées. Remplis le questionnaire : 2 minutes, sans paiement. Moi ou quelqu'un de mon équipe te répond sous 48 h ouvrées.</p>
     <p><strong><span class="js-places">12</span> <span class="js-places-label">places restantes</span> sur <span class="js-total">12</span></strong></p>
     <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place fondatrice <span class="arrow" aria-hidden="true">→</span></a></div>
   </div>
@@ -781,7 +781,7 @@
 
       <fieldset class="consent">
         <legend><span class="qn" aria-hidden="true">9</span>Consentement</legend>
-        <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni partagées. Elles sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. J'accepte aussi le traitement de ma réponse à la question 7 (contre-indication médicale), utilisée uniquement pour vérifier que je peux commencer en sécurité. <span class="req" aria-hidden="true">*</span></span></label>
+        <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni louées ; seule mon équipe commerciale y a accès pour me recontacter, sans ma réponse à la question 7. Elles sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. J'accepte aussi le traitement de ma réponse à la question 7 (contre-indication médicale), utilisée uniquement pour vérifier que je peux commencer en sécurité. <span class="req" aria-hidden="true">*</span></span></label>
         <p class="help" style="margin-top:12px">Facultatif, modifiable à tout moment :</p>
         <label class="opt"><input type="checkbox" name="tableau" value="Oui"> <span>J'accepte que mon prénom (ou le pseudo de mon choix) et ma régularité (séances faites, check-ins envoyés, missions validées) apparaissent dans le tableau de régularité visible par les membres de la cohorte.</span></label>
         <label class="field">Pseudo souhaité (optionnel)<input type="text" name="pseudo" maxlength="40"></label>
@@ -969,7 +969,7 @@
     }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(d){
         if (!d || d.ok !== true) return Promise.reject("refus");
-        ok.textContent = "Merci " + val("prenom") + ", ta demande est bien partie. Je lis ta réponse moi-même et je te réponds sous 48 h ouvrées. Aucun paiement à cette étape.";
+        ok.textContent = "Merci " + val("prenom") + ", ta demande est bien partie. Moi ou quelqu'un de mon équipe te répond sous 48 h ouvrées. Aucun paiement à cette étape.";
         form.reset();
       })
       .catch(function(){
