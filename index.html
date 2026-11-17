@@ -1106,8 +1106,9 @@
           <input type="text" id="parrainage-champ" name="parrainage">
         </div>
         <div class="form-field form-field--full">
-          <label for="message">Un mot sur ta situation (contraintes, blessures, objectif précis...)</label>
-          <textarea id="message" name="message"></textarea>
+          <label for="message">Un mot sur ta situation (contraintes, objectif précis...)</label>
+          <textarea id="message" name="message" aria-describedby="message-aide"></textarea>
+          <p class="form-note" id="message-aide" style="margin-top:.5rem">N'indique pas d'information de santé ici, on en parlera de vive voix. <a href="confidentialite.html" style="text-decoration:underline">Politique de confidentialité</a></p>
         </div>
       </div>
 
@@ -1230,9 +1231,10 @@
 </aside>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" defer></script>
+<!-- Bibliothèques hébergées sur le site (copies exactes des paquets npm gsap@3.12.5 et lenis@1.1.14) : aucun appel à un CDN tiers. -->
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/vendor/lenis.min.js" defer></script>
 <script src="assets/js/consent.js" defer></script>
 <script src="assets/js/media.js" defer></script>
 <script src="assets/js/main.js" defer></script>
