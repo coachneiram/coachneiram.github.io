@@ -6,7 +6,7 @@
 <!-- Politique de sécurité (CSP). Le script en bas de page est autorisé par son empreinte sha256 :
      toute modification de ce script impose de recalculer l'empreinte (sinon il est bloqué).
      Les réglages (places, liens) sont dans feu-vert/reglages.js et peuvent changer sans recalcul. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lgGwVdPQ/XfjaGEQge4QATXBwVDkE5pe0e51ba0A1X8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://coach-neiram-proxy.pelissier-marien.workers.dev; form-action 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-UM2x92IIVPOx6tHh3UTxswTzj3B0KAJk8uMQmhCgn7o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://coach-neiram-proxy.pelissier-marien.workers.dev; form-action 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <!-- Réglages (places restantes, lien du questionnaire, adresse d'envoi) : feu-vert/reglages.js -->
 <script src="feu-vert/reglages.js"></script>
 <title>Feu Vert — Cohorte fondatrice | Coach Neiram</title>
@@ -867,9 +867,9 @@
   if (!form) return;
   var ouvertLe = Date.now(); // durée de remplissage, contrôlée par le serveur (anti-robot)
 
-  // Identifiant de demande, créé à l'ouverture du formulaire (référence en cas d'email de secours).
-  // NON envoyé au Worker pour l'instant : la route /reservation-feu-vert refuse tout champ
-  // inconnu (erreur « champ-inconnu »). Quand le Worker acceptera « idDemande », l'ajouter à `charge`.
+  // Identifiant de demande, créé à l'ouverture du formulaire : envoyé au Worker (champ « idDemande »,
+  // clé anti-doublon du classeur, jamais copié au CRM) et rappelé dans l'email de secours.
+  // Le Worker doit accepter « idDemande » AVANT la mise en ligne de cette page (sinon 400 « champ-inconnu »).
   function nouvelIdDemande(){
     if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
     var b = new Uint8Array(16);
@@ -953,7 +953,7 @@
     ok.classList.add("show");
     // Envoi au Worker Coach Neiram (Cloudflare) → script Google (onglet « Feu Vert – Réservations »).
     // Les choix sont envoyés tels quels : le serveur les vérifie contre les mêmes listes.
-    // Format inchangé pour le Worker (il refuse les champs inconnus) : « consentement » reste un booléen,
+    // Le Worker refuse les champs inconnus : « consentement » reste un booléen,
     // vrai seulement si la demande est acceptée ET (la réponse santé est consentie OU absente).
     var charge = {
       prenom: val("prenom"), email: mail, telephone: val("telephone"), instagram: val("instagram"),
@@ -963,7 +963,8 @@
       presentiel: form.elements["presentiel"].checked,
       consentement: consentDemande && (consentSante || !reponseSante),
       tableau: form.elements["tableau"].checked, pseudo: val("pseudo"), binome: form.elements["binome"].checked,
-      site_web: val("site_web"), dureeMs: Date.now() - ouvertLe
+      site_web: val("site_web"), dureeMs: Date.now() - ouvertLe,
+      idDemande: idDemande
     };
     fetch(FORM_ENDPOINT, {
       method: "POST",
