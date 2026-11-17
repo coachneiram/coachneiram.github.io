@@ -109,6 +109,7 @@
       { "@type": "Offer", "name": "Suivi Hebdomadaire — présentiel", "price": "220", "priceCurrency": "EUR", "description": "À partir de 220€/mois en engagement 12 mois. 1 séance individuelle par semaine, programme, suivi nutritionnel et ajustements hebdomadaires." },
       { "@type": "Offer", "name": "Suivi Mensuel — présentiel", "price": "210", "priceCurrency": "EUR", "description": "210€/mois. 1 séance individuelle par mois, programme en autonomie et recommandations alimentaires." },
       { "@type": "Offer", "name": "Coaching en ligne", "price": "150", "priceCurrency": "EUR", "description": "150€/mois. Séances visio, programme personnalisé actualisé, suivi nutritionnel et correction technique par vidéo." },
+      { "@type": "Offer", "name": "Le Créneau Protégé — coaching en ligne pour jeunes papas", "price": "1500", "priceCurrency": "EUR", "description": "6 mois d'accompagnement à distance : séances sans salle ni matériel, 14 visios individuelles, suivi WhatsApp, application de suivi. 1 500€ comptant ou 3 × 520€." },
       { "@type": "Offer", "name": "Consultation Experte", "price": "80", "priceCurrency": "EUR", "description": "80€ la consultation d'1h en visio ou par téléphone, sans engagement." }
     ]
   }
@@ -124,11 +125,12 @@
   <a class="nav__brand" href="#top">Coach<span>&nbsp;Neiram</span></a>
 
   <nav class="nav__links" aria-label="Navigation principale">
-    <a class="nav__link" href="#accompagnements">Accompagnements</a>
+    <a class="nav__link" href="#services">Services</a>
     <a class="nav__link" href="#methode">Méthode</a>
     <a class="nav__link" href="#programmes">Programmes</a>
     <a class="nav__link" href="#apropos">À propos</a>
     <a class="nav__link" href="#avis">Avis</a>
+    <a class="nav__link" href="#espace-membres">Espace membres</a>
   </nav>
 
   <div class="nav__actions">
@@ -144,11 +146,12 @@
 
 <!-- Menu plein écran (mobile / tablette) -->
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu de navigation" inert>
-  <a class="menu__link" href="#accompagnements">Accompagnements</a>
+  <a class="menu__link" href="#services">Services</a>
   <a class="menu__link" href="#methode">Méthode</a>
   <a class="menu__link" href="#programmes">Programmes</a>
   <a class="menu__link" href="#apropos">À propos</a>
   <a class="menu__link" href="#avis">Avis</a>
+  <a class="menu__link" href="#espace-membres">Espace membres</a>
   <a class="menu__link" href="#contact">Contact</a>
   <div class="menu__meta">
     <a href="tel:+33675359069">06 75 35 90 69</a>
@@ -235,7 +238,7 @@
             <span class="step__num">01</span>
             <h3 class="step__title">Évaluer</h3>
           </div>
-          <p class="step__desc">On part de là où tu en es vraiment : niveau, antécédents, blessures, contraintes de temps. Sans jugement, et sans surestimer le point de départ.</p>
+          <p class="step__desc">On part de là où tu en es vraiment : niveau, expérience, objectifs, contraintes de temps. Sans jugement, et sans surestimer le point de départ.</p>
         </article>
 
         <article class="step" data-step>
@@ -266,15 +269,19 @@
   </div>
 </section>
 
-<!-- ============ ACCOMPAGNEMENTS ============ -->
-<section class="section section--sunken" id="accompagnements" aria-labelledby="accomp-titre">
+<!-- ============ SERVICES ============ -->
+<!-- Offres et tarifs : source unique memory/offres.md (dépôt coach-neiram-business).
+     Aucun prix ici qui n'y figure pas. -->
+<section class="section section--sunken" id="services" aria-labelledby="services-titre">
+  <span id="accompagnements" aria-hidden="true"></span>
   <div class="shell">
     <header class="section-head section-head--split">
-      <p class="section-head__eyebrow"><span class="rule" aria-hidden="true"></span><span class="label">Mes accompagnements</span></p>
-      <h2 id="accomp-titre" data-reveal>Choisis ton niveau<br>d'accompagnement.</h2>
+      <p class="section-head__eyebrow"><span class="rule" aria-hidden="true"></span><span class="label">Services</span></p>
+      <h2 id="services-titre" data-reveal>Choisis ta<br>formule.</h2>
       <p class="lead section-head__lead" data-reveal>
-        Quatre formats, une seule exigence. En salle autour de Clermont-Ferrand
-        ou en ligne partout en France — la méthode et le suivi ne changent pas.
+        En salle à Clermont-Ferrand, en ligne partout en France, seul ou en groupe.
+        Une seule méthode, un suivi réel. À qui s'adresse chaque formule, comment elle
+        se passe et ce qu'elle coûte : tout est écrit ici.
       </p>
     </header>
 
@@ -288,16 +295,16 @@
         </div>
         <div>
           <h3 class="service__title">Suivi Hebdomadaire</h3>
-          <p class="service__desc" style="margin-top:.75rem">Accompagnement intensif — pour des résultats rapides et un cadre serré : perte de poids, prise de masse, préparation compétition.</p>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> celles et ceux qui veulent le cadre le plus serré, une séance par semaine avec moi en salle, quel que soit l'objectif : remise en forme, perte de poids, prise de masse, préparation compétition.</p>
           <ul class="service__list">
-            <li>1 séance individuelle / semaine</li>
+            <li>1 séance individuelle / semaine à Fitness Park Clermont Le Brezet</li>
             <li>Programme d'entraînement en autonomie</li>
             <li>Suivi nutritionnel personnalisé</li>
             <li>Ajustements hebdomadaires</li>
           </ul>
           <table class="tiers">
             <caption class="visually-hidden">Tarifs du Suivi Hebdomadaire selon la durée d'engagement</caption>
-            <thead><tr><th scope="col">Durée</th><th scope="col" style="text-align:right">Prix / mois</th></tr></thead>
+            <thead><tr><th scope="col">Engagement</th><th scope="col" style="text-align:right">Prix / mois</th></tr></thead>
             <tbody>
               <tr><td>3 mois</td><td>280€</td></tr>
               <tr><td>6 mois</td><td>250€</td></tr>
@@ -312,30 +319,73 @@
       <article class="service" data-reveal>
         <div class="service__head">
           <span class="service__num">02</span>
-          <span class="badge badge--accent">Places limitées</span>
+          <span class="badge">Présentiel</span>
         </div>
         <div>
           <h3 class="service__title">Suivi Mensuel</h3>
-          <p class="service__desc" style="margin-top:.75rem">Accompagnement autonomie — pour les pratiquants déjà entraînés qui veulent un cadrage stratégique sans supervision hebdomadaire.</p>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> les pratiquants déjà entraînés qui veulent un cadrage régulier sans supervision chaque semaine.</p>
           <ul class="service__list">
             <li>1 séance individuelle / mois : bilan, ajustement, technique</li>
             <li>Programme d'entraînement en autonomie</li>
             <li>Recommandations alimentaires incluses</li>
+            <li>Sans engagement, reconduction mensuelle</li>
           </ul>
           <p class="service__price" style="margin-top:2rem">210€ <small>/ mois</small></p>
         </div>
         <a class="btn btn--ghost btn--block" href="#contact">Demander cette formule</a>
       </article>
 
-      <!-- 03 — Coaching en ligne -->
+      <!-- 03 — Le Créneau Protégé -->
       <article class="service" data-reveal>
         <div class="service__head">
           <span class="service__num">03</span>
+          <span class="badge badge--accent">En ligne · jeunes papas</span>
+        </div>
+        <div>
+          <h3 class="service__title">Le Créneau Protégé</h3>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> les papas qui ont décroché du sport depuis l'arrivée de leur enfant et veulent reprendre sans prendre de temps sur la famille.</p>
+          <ul class="service__list">
+            <li>6 mois, 3 séances par semaine de 30 à 45 min, chez toi ou au travail, sans salle ni matériel</li>
+            <li>14 visios individuelles et 3 bilans complets (départ, semaine 13, semaine 26)</li>
+            <li>Suivi WhatsApp du lundi au samedi, réponse dans la journée</li>
+            <li>Application de suivi : pointage des séances et bilan du dimanche</li>
+            <li>Objectifs fixés ensemble en capacités du quotidien, pas en kilos</li>
+          </ul>
+          <p class="service__price" style="margin-top:2rem">1&nbsp;500€ <small>comptant, ou 3 × 520€</small></p>
+        </div>
+        <a class="btn btn--primary btn--block" href="#contact">Réserver mon bilan de créneau <svg class="btn__arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+
+      <!-- 04 — Feu Vert -->
+      <article class="service" data-reveal>
+        <div class="service__head">
+          <span class="service__num">04</span>
+          <span class="badge">En ligne · en groupe</span>
+        </div>
+        <div>
+          <h3 class="service__title">Feu Vert</h3>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> les débutants qui veulent apprendre à s'entraîner en salle et s'y sentir à leur place, accompagnés à distance avec un petit groupe.</p>
+          <ul class="service__list">
+            <li>Coaching collectif à distance sur 6 semaines</li>
+            <li>8 gestes de base appris un par un</li>
+            <li>Corrections vidéo de ton coach sur WhatsApp</li>
+            <li>4 missions à réaliser dans ta salle</li>
+            <li>Première cohorte : démarrage le lundi 18 janvier 2027</li>
+          </ul>
+          <p class="service__desc" style="margin-top:2rem">Tarif, calendrier et conditions détaillés sur la page du programme.</p>
+        </div>
+        <a class="btn btn--ghost btn--block" href="feu-vert.html">Découvrir Feu Vert</a>
+      </article>
+
+      <!-- 05 — Coaching en ligne -->
+      <article class="service" data-reveal>
+        <div class="service__head">
+          <span class="service__num">05</span>
           <span class="badge">Partout en France</span>
         </div>
         <div>
           <h3 class="service__title">Coaching en ligne</h3>
-          <p class="service__desc" style="margin-top:.75rem">Un accompagnement individuel à distance, avec la même méthode et la même exigence qu'en salle.</p>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> celles et ceux qui ne peuvent pas venir en salle à Clermont-Ferrand et veulent un suivi individuel à distance, avec la même méthode.</p>
           <ul class="service__list">
             <li>1 séance visio / semaine si besoin, sinon 1 dans le mois</li>
             <li>Programme personnalisé, actualisé selon ta progression</li>
@@ -347,20 +397,20 @@
         <a class="btn btn--ghost btn--block" href="#contact">Demander cette formule</a>
       </article>
 
-      <!-- 04 — Consultation Experte -->
+      <!-- 06 — Consultation Experte -->
       <article class="service" data-reveal>
         <div class="service__head">
-          <span class="service__num">04</span>
-          <span class="badge badge--solid">Nouveau</span>
+          <span class="service__num">06</span>
+          <span class="badge">Visio ou téléphone</span>
         </div>
         <div>
           <h3 class="service__title">Consultation Experte</h3>
-          <p class="service__desc" style="margin-top:.75rem">Juste besoin d'un avis extérieur pour t'orienter, sans prendre un suivi ? En 1h, on fait le point sur ton objectif et ton programme actuel.</p>
+          <p class="service__desc" style="margin-top:.75rem"><strong>Pour qui :</strong> toi qui as juste besoin d'un avis extérieur pour t'orienter, sans prendre un suivi. En 1h, on fait le point sur ton objectif et ton programme actuel.</p>
           <ul class="service__list">
             <li>1h en visio ou par téléphone, au créneau qui t'arrange</li>
             <li>Avis personnalisé sur ta situation et ton objectif</li>
             <li>Orientation concrète : ce qu'il faut ajuster, et dans quel ordre</li>
-            <li>Tu repars avec un plan d'action clair</li>
+            <li>Sans engagement</li>
           </ul>
           <p class="service__price" style="margin-top:2rem">80€ <small>/ consultation</small></p>
         </div>
@@ -371,6 +421,42 @@
     <div class="callout" data-reveal style="margin-top:2.5rem">
       <p><strong>Bon à savoir :</strong> si tu démarres un coaching dans les 10 jours suivant ta consultation, 40€ sont déduits de ta première facture.</p>
     </div>
+  </div>
+</section>
+
+<!-- ============ ESPACE MEMBRES — LA PLATEFORME ============ -->
+<section class="section section--ruled" id="espace-membres" aria-labelledby="espace-titre">
+  <div class="shell">
+    <header class="section-head section-head--split">
+      <p class="section-head__eyebrow"><span class="rule" aria-hidden="true"></span><span class="label">Espace membres</span></p>
+      <h2 id="espace-titre" data-reveal>La plateforme<br>Coach Neiram.</h2>
+      <p class="lead section-head__lead" data-reveal>
+        Ton espace personnel et la communauté, au même endroit. Tu y retrouves ton suivi,
+        tes bilans de la semaine et ta progression, les échanges avec les autres membres
+        et les visios du groupe. La plateforme est réservée aux personnes que j'accompagne :
+        l'accès est ouvert à ton inscription.
+      </p>
+    </header>
+
+    <article class="service" data-reveal>
+      <div class="service__head">
+        <span class="service__num">Accès</span>
+        <span class="badge badge--accent">Réservée aux clients</span>
+      </div>
+      <div>
+        <h3 class="service__title">Ce que tu y trouves</h3>
+        <ul class="service__list">
+          <li>Ton espace perso : bilan de la semaine, progression, modules</li>
+          <li>La communauté de ton accompagnement : discussions, défis, victoires</li>
+          <li>L'agenda et les liens des visios</li>
+          <li>Les messages privés avec ton coach</li>
+        </ul>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center">
+        <a class="btn btn--primary" href="https://coach-neiram-os.pelissier-marien.workers.dev/" rel="noopener">Accéder à mon espace <svg class="btn__arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--ghost" href="#services">Pas encore client ? Voir les services</a>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -1065,6 +1151,7 @@
             <option value="">Choisis une option</option>
             <option>En salle</option>
             <option>En ligne</option>
+            <option>Le Créneau Protégé (jeunes papas, en ligne)</option>
             <option>Consultation (1h)</option>
           </select>
         </div>
@@ -1169,9 +1256,10 @@
         <p class="footer__col-title" id="footer-nav-titre">Navigation</p>
         <ul class="footer__list">
           <li><a href="#top">Accueil</a></li>
-          <li><a href="#accompagnements">Coaching</a></li>
+          <li><a href="#services">Services</a></li>
           <li><a href="#methode">Méthode</a></li>
           <li><a href="#outils">Outils de suivi</a></li>
+          <li><a href="#espace-membres">Espace membres</a></li>
           <li><a href="#programmes">Programmes</a></li>
           <li><a href="#apropos">À propos</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -1194,6 +1282,7 @@
           <li><a href="confidentialite.html">Politique de confidentialité</a></li>
           <li><button type="button" class="consent-reopen" data-consent-reopen>Gérer mes cookies</button></li>
           <li><a href="#parrainage">Programme parrainage</a></li>
+          <li><a href="https://coach-neiram-os.pelissier-marien.workers.dev/" rel="noopener">Accéder à mon espace</a></li>
         </ul>
       </div>
     </div>
