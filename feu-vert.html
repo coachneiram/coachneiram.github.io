@@ -3,21 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>
-  /* ============================================================
-     RÉGLAGES — à modifier ici uniquement
-     PLACES_RESTANTES : nombre de places encore disponibles (0 = complet)
-     QUESTIONNAIRE_URL : lien du formulaire hébergé (TinyPages, Tally…).
-       Valeur provisoire "#questionnaire" = formulaire de secours en bas de page.
-     FORM_ENDPOINT : réception du questionnaire (Worker Cloudflare de Coach Neiram,
-       route /reservation-feu-vert → script Google → onglet « Feu Vert – Réservations »).
-       En cas d'échec, la page ouvre l'email de la personne avec ses réponses (mailto).
-     ============================================================ */
-  const PLACES_RESTANTES = 12;
-  const PLACES_TOTAL = 12;
-  const QUESTIONNAIRE_URL = "#questionnaire";
-  const FORM_ENDPOINT = "https://coach-neiram-proxy.pelissier-marien.workers.dev/reservation-feu-vert";
-</script>
+<!-- Politique de sécurité (CSP). Le script en bas de page est autorisé par son empreinte sha256 :
+     toute modification de ce script impose de recalculer l'empreinte (sinon il est bloqué).
+     Les réglages (places, liens) sont dans feu-vert/reglages.js et peuvent changer sans recalcul. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lgGwVdPQ/XfjaGEQge4QATXBwVDkE5pe0e51ba0A1X8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://coach-neiram-proxy.pelissier-marien.workers.dev; form-action 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<!-- Réglages (places restantes, lien du questionnaire, adresse d'envoi) : feu-vert/reglages.js -->
+<script src="feu-vert/reglages.js"></script>
 <title>Feu Vert — Cohorte fondatrice | Coach Neiram</title>
 <meta name="description" content="Feu Vert : Coaching à distance de 6 semaines pour débuter ou reprendre la musculation en salle. 8 gestes de base validés un par un, corrections vidéo de ton coach sur WhatsApp, 4 missions salle. Cohorte fondatrice le 18 janvier 2027, 12 places à 59 €.">
 <meta name="theme-color" content="#0D0D0D">
@@ -30,11 +21,14 @@
 <meta property="og:url" content="https://coachneiram.github.io/feu-vert.html">
 <meta name="twitter:card" content="summary">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0B0B'/%3E%3Crect x='8' y='20' width='8' height='24' rx='2' fill='%23FFD400'/%3E%3Crect x='17' y='24' width='6' height='16' rx='2' fill='%23FFD400'/%3E%3Crect x='22' y='29' width='20' height='6' fill='%23FFD400'/%3E%3Crect x='41' y='24' width='6' height='16' rx='2' fill='%23FFD400'/%3E%3Crect x='48' y='20' width='8' height='24' rx='2' fill='%23FFD400'/%3E%3C/svg%3E">
-<!-- Police facultative : si Google Fonts ne charge pas, la page utilise la police système. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&display=swap">
 <style>
+  /* Police Archivo hébergée sur le site (paquet npm @fontsource/archivo 5.3.0, licence OFL, assets/fonts/archivo/) :
+     aucun appel à Google Fonts. Si elle ne charge pas, la page utilise la police système. */
+  @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:400;src:url(assets/fonts/archivo/archivo-latin-400-normal.woff2) format("woff2")}
+  @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:500;src:url(assets/fonts/archivo/archivo-latin-500-normal.woff2) format("woff2")}
+  @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:700;src:url(assets/fonts/archivo/archivo-latin-700-normal.woff2) format("woff2")}
+  @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:800;src:url(assets/fonts/archivo/archivo-latin-800-normal.woff2) format("woff2")}
+  @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:900;src:url(assets/fonts/archivo/archivo-latin-900-normal.woff2) format("woff2")}
   :root{
     --y:#FFD500; --k:#0D0D0D; --k2:#161616; --w:#FFFFFF; --g:#F5F4EF;
     --txt:#151515; --mut:#4A4A4A; --mut-d:#C9C9C9; --line:#E2E0D8;
@@ -474,7 +468,6 @@
           <li><span class="tag">Niveau 3</span><span>Autonomie : 5 gestes au vert.</span></li>
           <li><span class="tag">Niveau 4</span><span>Feu Vert : les 8 gestes au vert.</span></li>
         </ul>
-        <!-- Seuils des niveaux (2 / 5 / 8 gestes) à confirmer par Marien avant mise en ligne. -->
         <p>Ton niveau mesure ta technique. Il ne dit rien de ton poids ni de ton physique.</p>
       </article>
       <article class="tool">
@@ -556,19 +549,14 @@
   <div class="wrap coach">
     <figure class="photo" style="margin:0">
       <div class="ph" aria-hidden="true"><div><svg viewBox="0 0 290 78"><g fill="#FFD500"><rect x="0" y="21" width="19" height="37"/><rect x="19" y="0" width="48" height="78"/><rect x="67" y="29" width="155" height="20"/><rect x="222" y="0" width="48" height="78"/><rect x="270" y="21" width="20" height="37"/></g></svg>COACH NEIRAM</div></div>
-      <!-- PHOTO : déposer marien.jpg (portrait 4:5, ~1000 x 1250 px, < 250 Ko) à côté de ce fichier. -->
-      <img src="feu-vert/marien.jpg" alt="Marien Pelissier, alias Coach Neiram, coach sportif à Clermont-Ferrand" width="800" height="1000" loading="lazy" onerror="this.remove()">
+      <img src="feu-vert/marien.jpg" alt="Marien Pelissier, alias Coach Neiram, coach sportif à Clermont-Ferrand" width="800" height="1000" loading="lazy" data-retirer-si-erreur>
     </figure>
     <div>
       <span class="eyebrow">Qui est Marien</span>
       <h2 id="titre-coach">Ton coach : Marien, alias Coach Neiram</h2>
       <p>Je suis coach sportif indépendant depuis 5 ans, en salle à Clermont-Ferrand. Diplômé d'un DEUST Métiers de la Forme, certifié Pilates et formé en préparation mentale.</p>
       <p>L'essentiel de mes clients débutent en salle. J'ai accompagné une centaine de personnes : des reprises après plusieurs années d'arrêt, des personnes stressées par le regard des autres, des emplois du temps impossibles. Feu Vert reprend ce que je fais avec eux en face à face, sous une forme collective et en ligne.</p>
-      <!-- Nombre d'avis Google à vérifier le jour de la mise en ligne. -->
       <p class="rating"><span>Ce que disent mes clients :</span> <span class="stars" aria-hidden="true">★★★★★</span> <span>51 avis Google, note 5/5.</span></p>
-      <!-- TÉMOIGNAGE 1 À AJOUTER — client débutant en salle, avec accord écrit.
-           Modèle : <blockquote class="card"><p>« Texte du témoignage »</p><footer>— Prénom, débutante en salle</footer></blockquote> -->
-      <!-- TÉMOIGNAGE 2 À AJOUTER — personne en reprise après un long arrêt, avec accord écrit. -->
       <div class="cta-row"><a class="btn btn-dark js-cta" href="#questionnaire">Je réserve ma place <span class="arrow" aria-hidden="true">→</span></a></div>
     </div>
   </div>
@@ -628,7 +616,6 @@
         </ul>
         <div class="cta-row"><a class="btn btn-block js-cta" href="#questionnaire">Je réserve ma place fondatrice <span class="arrow" aria-hidden="true">→</span></a></div>
       </article>
-      <!-- Bloc « dépôt d'engagement 20 € » volontairement absent : non retenu pour la cohorte 1 (à tester en cohorte 2). -->
       <div>
         <h3>Tarif après la cohorte fondatrice</h3>
         <div class="price-grid">
@@ -636,7 +623,6 @@
           <div class="price-card"><span class="l">3 cycles<span class="s">18 semaines</span></span><span class="p">229&nbsp;€</span></div>
           <div class="price-card"><span class="l">6 cycles<span class="s">36 semaines</span></span><span class="p">399&nbsp;€</span></div>
         </div>
-        <!-- Mention TVA à confirmer par Marien (franchise en base, art. 293 B du CGI). -->
         <p class="legal-note">Paiement par lien sécurisé Stripe. TVA non applicable, art. 293 B du CGI.</p>
       </div>
     </div>
@@ -658,7 +644,6 @@
       <details><summary>Je m'entraîne à la maison, est-ce adapté ?</summary><div class="ans"><p>Feu Vert demande un accès à une salle : certains gestes utilisent une poulie, et les 4 missions se passent sur place. Si tu t'entraînes chez toi, écris-moi, je t'orienterai vers une autre solution.</p></div></details>
       <details><summary>Je suis déjà en suivi présentiel avec toi. Je peux rejoindre Feu Vert ?</summary><div class="ans"><p>Feu Vert n'est pas ouvert aux clients en suivi présentiel actif. Ton suivi actuel couvre déjà tout ce que contient le programme, et davantage.</p></div></details>
       <details><summary>Que se passe-t-il si la cohorte n'ouvre pas ?</summary><div class="ans"><p>Si moins de 8 personnes s'engagent avant le dimanche 10 janvier 2027, la cohorte de janvier n'ouvre pas. Tu ne paies rien, je te préviens par message, et tes données sont supprimées si tu le demandes.</p></div></details>
-      <!-- FAQ 7 : conditions de rétractation si le cycle démarre avant la fin des 14 jours à aligner sur les CGV et le contrat coaching en ligne avant mise en ligne. -->
       <details><summary>Comment se passent le paiement et le remboursement ?</summary><div class="ans"><p>Tu ne paies que si la cohorte ouvre : lien de paiement sécurisé envoyé le lundi 11 janvier, à régler avant le vendredi 15 janvier à 23 h 59. Si moins de 8 personnes ont payé à cette date, la cohorte peut être annulée au plus tard le samedi 16 janvier et tu es remboursé intégralement.</p><p>Tu disposes d'un droit de rétractation de 14 jours à compter de ton paiement. Comme le cycle démarre le 18 janvier, avant la fin de ce délai, tu choisis au paiement : soit tu demandes à commencer le 18 janvier (si tu te rétractes ensuite, seule la part du cycle déjà fournie reste due), soit ton accès s'ouvre à la fin de ton délai de rétractation. Détails dans les <a href="cgv-feu-vert.html#cgv">CGV</a>, articles 6 et 8.</p></div></details>
       <details><summary>J'ai une douleur, une blessure ou un problème de santé.</summary><div class="ans"><p>Dans ce cas, demande l'avis de ton médecin avant de commencer. Feu Vert est un programme d'entraînement, il ne remplace pas un suivi médical ou kiné.</p></div></details>
     </div>
@@ -679,11 +664,12 @@
 <!-- ======================================================================
      QUESTIONNAIRE DE SECOURS (sans serveur)
      Tant que QUESTIONNAIRE_URL vaut "#questionnaire", tous les boutons mènent ici
-     et l'envoi ouvre l'application email de la personne (mailto:) avec ses réponses.
+     et l'envoi part vers le Worker (FORM_ENDPOINT). En cas d'échec, un lien email de secours
+     est proposé, sans les réponses (prénom, contact et référence de la demande seulement).
 
      POUR BRANCHER LE FORMULAIRE HÉBERGÉ (TinyPages, Tally…) :
        1. Crée le formulaire avec les mêmes 9 questions et le même texte de consentement.
-       2. En haut de ce fichier, remplace :
+       2. Dans feu-vert/reglages.js, remplace :
             const QUESTIONNAIRE_URL = "#questionnaire";
           par l'adresse du formulaire, par exemple :
             const QUESTIONNAIRE_URL = "https://tally.so/r/XXXXXX";
@@ -781,7 +767,9 @@
 
       <fieldset class="consent">
         <legend><span class="qn" aria-hidden="true">9</span>Consentement</legend>
-        <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni louées ; seule mon équipe commerciale y a accès pour me recontacter, sans ma réponse à la question 7. Elles sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. J'accepte aussi le traitement de ma réponse à la question 7 (contre-indication médicale), utilisée uniquement pour vérifier que je peux commencer en sécurité. <span class="req" aria-hidden="true">*</span></span></label>
+        <label class="opt"><input type="checkbox" name="consentement" value="Oui" required aria-required="true"> <span>J'accepte que Marien Pelissier (EI) utilise mes réponses pour étudier ma demande d'entrée dans Feu Vert et me recontacter à ce sujet. Elles ne sont ni vendues ni louées. L'équipe commerciale de Coach Neiram reçoit uniquement mes coordonnées et mes réponses non médicales, pour me recontacter. Mes réponses sont conservées 12 mois maximum à compter de l'envoi, puis supprimées. Je peux demander l'accès, la correction ou la suppression de mes données à tout moment en écrivant à coachingbymarien@gmail.com. <span class="req" aria-hidden="true">*</span></span></label>
+        <label class="opt"><input type="checkbox" name="consentement_sante" value="Oui" aria-describedby="aide-consentement-sante"> <span>J'accepte le traitement de ma réponse à la question 7 (contre-indication médicale, oui ou non), utilisée uniquement pour vérifier que je peux commencer en sécurité. Seul Marien Pelissier y a accès : elle n'est jamais transmise à l'équipe commerciale. Je peux retirer ce consentement à tout moment. <span class="req" aria-hidden="true">*</span></span></label>
+        <p class="help" id="aide-consentement-sante">Cette case est obligatoire dès que tu réponds à la question 7 (consentement explicite, art. 9.2.a du RGPD).</p>
         <p class="help" style="margin-top:12px">Facultatif, modifiable à tout moment :</p>
         <label class="opt"><input type="checkbox" name="tableau" value="Oui"> <span>J'accepte que mon prénom (ou le pseudo de mon choix) et ma régularité (séances faites, check-ins envoyés, missions validées) apparaissent dans le tableau de régularité visible par les membres de la cohorte.</span></label>
         <label class="field">Pseudo souhaité (optionnel)<input type="text" name="pseudo" maxlength="40"></label>
@@ -806,11 +794,9 @@
         <svg viewBox="0 0 290 78" aria-hidden="true" focusable="false"><g fill="#FFD500"><rect x="0" y="21" width="19" height="37"/><rect x="19" y="0" width="48" height="78"/><rect x="67" y="29" width="155" height="20"/><rect x="222" y="0" width="48" height="78"/><rect x="270" y="21" width="20" height="37"/></g></svg>
         <span>COACH NEIRAM</span>
       </a>
-      <!-- Mention TVA à confirmer par Marien. -->
       <p style="margin:10px 0 4px">Marien Pelissier, EI — TVA non applicable, art. 293 B du CGI</p>
       <p style="margin:0">Contact : <a href="mailto:coachingbymarien@gmail.com">coachingbymarien@gmail.com</a></p>
     </div>
-    <!-- Liens légaux : pages à créer (cgv-feu-vert.html avec ancres #mentions-legales et #confidentialite). -->
     <nav aria-label="Informations légales">
       <ul>
         <li><a href="cgv-feu-vert.html#mentions-legales">Mentions légales</a></li>
@@ -869,10 +855,32 @@
     hideZones.forEach(function(z){ if (z && !z.hidden) zo.observe(z); });
   }
 
+  /* ---- Photo du coach : retirée si le fichier manque (remplace l'ancien onerror inline, bloqué par la CSP) ---- */
+  document.querySelectorAll("img[data-retirer-si-erreur]").forEach(function(img){
+    var retirer = function(){ img.remove(); };
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) { retirer(); }
+    else { img.addEventListener("error", retirer); }
+  });
+
   /* ---- Questionnaire de secours ---- */
   var form = document.getElementById("fv-form");
   if (!form) return;
   var ouvertLe = Date.now(); // durée de remplissage, contrôlée par le serveur (anti-robot)
+
+  // Identifiant de demande, créé à l'ouverture du formulaire (référence en cas d'email de secours).
+  // NON envoyé au Worker pour l'instant : la route /reservation-feu-vert refuse tout champ
+  // inconnu (erreur « champ-inconnu »). Quand le Worker acceptera « idDemande », l'ajouter à `charge`.
+  function nouvelIdDemande(){
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    var b = new Uint8Array(16);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(b);
+    else for (var i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256);
+    b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+    var h = Array.prototype.map.call(b, function(x){ return (x + 256).toString(16).slice(1); }).join("");
+    return h.slice(0,8) + "-" + h.slice(8,12) + "-" + h.slice(12,16) + "-" + h.slice(16,20) + "-" + h.slice(20);
+  }
+  var idDemande = nouvelIdDemande();
+  var envoiEnCours = false;
 
   // Q3 : 3 choix maximum
   var q3 = form.querySelectorAll('input[name="blocage"]');
@@ -897,21 +905,39 @@
   function radio(name){ var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ""; }
   function checks(name){ return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function(c){ return c.value; }); }
 
+  // Email de secours : prénom, moyen de contact et référence UNIQUEMENT.
+  // Jamais les réponses au questionnaire (ni la question 7, ni les textes « Autre »).
+  function lienSecours(){
+    var corps = [
+      "Bonjour Marien,", "",
+      "Ma demande Feu Vert n'est pas passée.", "",
+      "Prénom : " + val("prenom"),
+      "Me recontacter : " + val("email") + (val("telephone") ? " / " + val("telephone") : ""),
+      "Référence de la demande : " + idDemande
+    ].join("\r\n");
+    return "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Feu Vert — ma demande n'est pas passée") + "&body=" + encodeURIComponent(corps);
+  }
+
   form.addEventListener("submit", function(ev){
     ev.preventDefault();
+    if (envoiEnCours) return;
     var err = document.getElementById("form-error"), ok = document.getElementById("form-ok");
     var missing = [];
     if (!val("prenom")) missing.push("ton prénom (question 1)");
     var mail = val("email");
-    // Mêmes règles que le Worker (route /reservation-feu-vert) : sinon le serveur refuse et l'envoi bascule sur l'email.
+    // Mêmes règles que le Worker (route /reservation-feu-vert) : sinon le serveur refuse la demande.
     if (!mail || !/^[^\s@<>"(),;:]+@[^\s@<>"(),;:]+\.[^\s@<>"(),;:]{2,}$/.test(mail)) missing.push("un email valide (question 1)");
     var tel = val("telephone");
     if (tel && !/^[0-9+ ().-]{6,30}$/.test(tel)) missing.push("un téléphone composé uniquement de chiffres, espaces, + . - ( ) (question 1, ou laisse-le vide)");
     if (!radio("niveau")) missing.push("la question 2");
     if (!radio("objectif")) missing.push("la question 4");
     if (!radio("lieu")) missing.push("la question 6");
-    if (!radio("contre_indication")) missing.push("la question 7");
-    if (!form.elements["consentement"].checked) missing.push("le consentement obligatoire (question 9)");
+    var reponseSante = radio("contre_indication");
+    if (!reponseSante) missing.push("la question 7");
+    var consentDemande = form.elements["consentement"].checked;
+    var consentSante = form.elements["consentement_sante"].checked;
+    if (!consentDemande) missing.push("le consentement au traitement de ta demande (question 9)");
+    if (reponseSante && !consentSante) missing.push("le consentement au traitement de ta réponse à la question 7 (question 9)");
     if (missing.length){
       err.textContent = "Il manque : " + missing.join(", ") + ".";
       err.classList.add("show"); ok.classList.remove("show");
@@ -920,45 +946,22 @@
     }
     err.classList.remove("show");
 
-    var blocages = checks("blocage");
-    if (blocages.indexOf("Autre") > -1 && val("blocage_autre")) blocages[blocages.indexOf("Autre")] = "Autre : " + val("blocage_autre");
-    var objectif = radio("objectif");
-    if (objectif === "Autre" && val("objectif_autre")) objectif = "Autre : " + val("objectif_autre");
-
-    var L = [];
-    L.push("Demande d'entrée — Feu Vert (cohorte fondatrice, janvier 2027)", "");
-    L.push("1. Coordonnées");
-    L.push("   Prénom : " + val("prenom"));
-    L.push("   Email : " + mail);
-    L.push("   Téléphone : " + (val("telephone") || "—"));
-    L.push("   Instagram : " + (val("instagram") || "—"), "");
-    L.push("2. Niveau en musculation : " + radio("niveau"));
-    L.push("3. Blocages : " + (blocages.join(" ; ") || "—"));
-    L.push("4. Objectif : " + objectif);
-    L.push("5. Créneaux : " + (checks("creneaux").join(" ; ") || "—"));
-    L.push("6. Lieu : " + radio("lieu") + (val("salle") ? " (" + val("salle") + ")" : ""));
-    L.push("7. Contre-indication médicale : " + radio("contre_indication"));
-    L.push("8. Suivi présentiel actif avec Marien : " + (form.elements["presentiel"].checked ? "Oui" : "Non"), "");
-    L.push("9. Consentements");
-    L.push("   Traitement des réponses (dont question 7) : Oui");
-    L.push("   Tableau de régularité : " + (form.elements["tableau"].checked ? "Oui" + (val("pseudo") ? " (pseudo : " + val("pseudo") + ")" : "") : "Non"));
-    L.push("   Partage avec le binôme : " + (form.elements["binome"].checked ? "Oui" : "Non"));
-
-    var subject = "Feu Vert — demande de " + val("prenom");
-    var texte = L.join("\r\n");
-    var mailtoHref = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(texte);
     var btn = form.querySelector('button[type="submit"]');
-    if (btn) { btn.disabled = true; }
+    envoiEnCours = true;
+    if (btn) { btn.disabled = true; btn.setAttribute("aria-busy", "true"); }
     ok.textContent = "Envoi en cours…";
     ok.classList.add("show");
     // Envoi au Worker Coach Neiram (Cloudflare) → script Google (onglet « Feu Vert – Réservations »).
     // Les choix sont envoyés tels quels : le serveur les vérifie contre les mêmes listes.
+    // Format inchangé pour le Worker (il refuse les champs inconnus) : « consentement » reste un booléen,
+    // vrai seulement si la demande est acceptée ET (la réponse santé est consentie OU absente).
     var charge = {
       prenom: val("prenom"), email: mail, telephone: val("telephone"), instagram: val("instagram"),
       niveau: radio("niveau"), blocage: checks("blocage"), blocageAutre: val("blocage_autre"),
       objectif: radio("objectif"), objectifAutre: val("objectif_autre"), creneaux: checks("creneaux"),
-      lieu: radio("lieu"), salle: val("salle"), contreIndication: radio("contre_indication"),
-      presentiel: form.elements["presentiel"].checked, consentement: form.elements["consentement"].checked,
+      lieu: radio("lieu"), salle: val("salle"), contreIndication: reponseSante,
+      presentiel: form.elements["presentiel"].checked,
+      consentement: consentDemande && (consentSante || !reponseSante),
       tableau: form.elements["tableau"].checked, pseudo: val("pseudo"), binome: form.elements["binome"].checked,
       site_web: val("site_web"), dureeMs: Date.now() - ouvertLe
     };
@@ -971,12 +974,26 @@
         if (!d || d.ok !== true) return Promise.reject("refus");
         ok.textContent = "Merci " + val("prenom") + ", ta demande est bien partie. Moi ou quelqu'un de mon équipe te répond sous 48 h ouvrées. Aucun paiement à cette étape.";
         form.reset();
+        a7.classList.remove("show"); a8.classList.remove("show"); limitQ3();
+        idDemande = nouvelIdDemande(); ouvertLe = Date.now();
       })
       .catch(function(){
-        ok.textContent = "L'envoi automatique n'a pas abouti. Ton application email va s'ouvrir avec tes réponses : appuie sur « Envoyer ». Sinon, écris à " + EMAIL + ".";
-        window.location.href = mailtoHref;
+        // Aucune ouverture automatique de l'email : un lien de secours sans les réponses.
+        ok.classList.remove("show");
+        err.textContent = "";
+        err.appendChild(document.createTextNode("Ta demande n'est pas passée. Réessaie dans quelques minutes ou "));
+        var a = document.createElement("a");
+        a.href = lienSecours();
+        a.textContent = "écris-moi";
+        err.appendChild(a);
+        err.appendChild(document.createTextNode(" (" + EMAIL + ")."));
+        err.classList.add("show");
+        err.focus();
       })
-      .finally(function(){ if (btn) { btn.disabled = false; } });
+      .finally(function(){
+        envoiEnCours = false;
+        if (btn) { btn.disabled = false; btn.removeAttribute("aria-busy"); }
+      });
   });
 })();
 </script>
