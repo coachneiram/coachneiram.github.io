@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Studio voix — Coach Neiram</title>
+<style>
+:root{--bg:#09090A;--card:#141416;--y:#FFD756;--w:#F5F5F2;--g:#8A8A8A;--r:#FF5A4E}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--w);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:800;font-size:20px}.brand b{color:var(--y)}
+.small{font-size:14px;color:var(--g)}
+h1{font-size:26px;line-height:1.15;margin:14px 0 6px}
+.card{background:var(--card);border:1px solid #26262a;border-radius:16px;padding:14px;margin-top:14px}
+.who{display:flex;gap:8px;flex-wrap:wrap}
+.who label{flex:1;min-width:120px;border:2px solid #333;border-radius:12px;padding:10px;text-align:center;font-weight:700;cursor:pointer}
+.who input{display:none}.who input:checked+span{color:var(--y)}.who label:has(input:checked){border-color:var(--y)}
+#prompt{height:46vh;overflow:hidden;position:relative;border-radius:14px;background:#000;margin-top:14px}
+#scroll{position:absolute;left:0;right:0;top:0;padding:34vh 18px 50vh;font-size:clamp(26px,6.5vw,40px);font-weight:700;line-height:1.35}
+#scroll p{margin:0 0 .9em}#scroll p.scene{color:var(--w)}
+#scroll .tag{display:block;font-size:13px;color:var(--y);letter-spacing:1px;font-weight:700;margin-bottom:4px}
+#mask{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#000 0,transparent 25%,transparent 70%,#000 100%)}
+#line{position:absolute;left:0;right:0;top:38%;border-top:2px dashed rgba(255,215,86,.45);pointer-events:none}
+#count{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:120px;font-weight:900;color:var(--y);background:rgba(0,0,0,.6)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+button,.btn{appearance:none;border:0;border-radius:14px;padding:14px 18px;font:700 17px system-ui,sans-serif;min-height:52px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.primary{background:var(--y);color:#09090A;flex:1}
+.rec{background:var(--r);color:#fff;flex:1}
+.ghost{background:#222;color:var(--w)}
+button:disabled{opacity:.4}
+button:focus-visible,.btn:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+#meter{height:8px;background:#222;border-radius:4px;overflow:hidden;flex:1;min-width:120px}#meter i{display:block;height:100%;width:0;background:var(--y)}
+#time{font-variant-numeric:tabular-nums;font-weight:700;min-width:64px}
+input[type=range]{flex:1}
+audio{width:100%;margin-top:10px}
+textarea{width:100%;min-height:160px;background:#000;color:var(--w);border:1px solid #333;border-radius:12px;padding:10px;font:16px system-ui}
+.ok{color:var(--y);font-weight:700}.err{color:var(--r);font-weight:700}
+ol{padding-left:20px;margin:6px 0}
+</style>
+</head><body><main>
+<header><div class="brand">COACH <b>NEIRAM</b> · Studio voix</div><span class="small">rien ne quitte ton téléphone</span></header>
+<h1 id="title">Enregistre ta voix off</h1>
+<div class="small" id="sub">Ouvre cette page depuis le bouton « 🎙 Enregistrer » d'un script de NEIRAM STUDIO.</div>
+
+<div class="card" id="pasteCard" hidden>
+  <b>Pas de script reçu.</b> <span class="small">Colle ton texte (une scène par paragraphe) :</span>
+  <textarea id="paste" maxlength="6000" placeholder="Scène 1…&#10;&#10;Scène 2…"></textarea>
+  <div class="row"><button class="ghost" id="usePaste">Utiliser ce texte</button></div>
+</div>
+
+<div class="card">
+  <div class="small" style="margin-bottom:6px">Qui enregistre ?</div>
+  <div class="who">
+    <label><input type="radio" name="who" value="marien"><span>Marien</span></label>
+    <label><input type="radio" name="who" value="anita" checked><span>Anita</span></label>
+  </div>
+</div>
+
+<div id="prompt"><div id="scroll"></div><div id="mask"></div><div id="line"></div><div id="count">3</div></div>
+<div class="row">
+  <span class="small">Vitesse</span><input type="range" id="speed" min="10" max="90" value="38" aria-label="Vitesse du prompteur">
+  <span class="small">Taille</span><input type="range" id="size" min="22" max="52" value="34" aria-label="Taille du texte">
+</div>
+<div class="row">
+  <button class="rec" id="recBtn">● Enregistrer</button>
+  <button class="ghost" id="pauseBtn" disabled>⏸ Pause</button>
+</div>
+<div class="row"><div id="meter"><i></i></div><span id="time">0:00</span></div>
+<p class="small" id="status">Pièce calme, téléphone à 15-20 cm. Lis toutes les scènes d'un trait, 1 seconde de pause entre deux scènes. Une phrase ratée : pause, et relis-la en entier.</p>
+
+<div class="card" id="result" hidden>
+  <b>Réécoute</b>
+  <audio id="player" controls playsinline></audio>
+  <div class="row">
+    <button class="ghost" id="redo">↺ Refaire</button>
+    <button class="primary" id="save">⬇ Enregistrer le fichier</button>
+  </div>
+  <p class="small" id="fileInfo"></p>
+  <ol class="small">
+    <li>Touche « Enregistrer le fichier » (iPhone : « Enregistrer dans Fichiers »).</li>
+    <li>Reviens dans NEIRAM STUDIO, sur la même vidéo, et touche « Importer ma voix ».</li>
+    <li>Choisis le fichier qui commence par <b id="fname">V…</b>. Le montage part tout seul.</li>
+  </ol>
+</div>
+
+<script>
+{
+const $ = (id) => document.getElementById(id);
+let data = {id: '', n: '', t: '', s: []};
+// --- read script from the URL hash: #d=<base64url(JSON)> (never sent to any server) ---
+function b64urlDecode(str) {
+  str = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (str.length % 4) str += '=';
+  const bin = atob(str); const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+try {
+  const m = location.hash.match(/[#&]d=([A-Za-z0-9_\-]+)/);
+  if (m && m[1].length < 20000) {
+    const o = JSON.parse(b64urlDecode(m[1]));
+    data.id = String(o.id || '').replace(/[^a-z0-9_\-]/gi, '').slice(0, 60);
+    data.n = String(o.n || '').replace(/[^0-9]/g, '').slice(0, 4);
+    data.t = String(o.t || '').slice(0, 140);
+    data.s = Array.isArray(o.s) ? o.s.slice(0, 30).map((x) => String(x).slice(0, 800)) : [];
+  }
+} catch (e) { data.s = []; }
+
+function renderScript() {
+  const sc = $('scroll'); sc.textContent = '';
+  data.s.forEach((txt, i) => {
+    const p = document.createElement('p'); p.className = 'scene';
+    const tag = document.createElement('span'); tag.className = 'tag';
+    tag.textContent = i === 0 ? 'SCÈNE 1 · ACCROCHE' : (i === data.s.length - 1 ? 'SCÈNE ' + (i + 1) + ' · APPEL À L’ACTION' : 'SCÈNE ' + (i + 1));
+    p.appendChild(tag); p.appendChild(document.createTextNode(txt)); sc.appendChild(p);
+  });
+  if (data.t) { $('title').textContent = (data.n ? 'V' + data.n + ' · ' : '') + data.t; $('sub').textContent = data.s.length + ' scènes à lire d’un trait.'; }
+  $('pasteCard').hidden = data.s.length > 0;
+}
+renderScript();
+$('usePaste').onclick = () => {
+  data.s = $('paste').value.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean).slice(0, 30).map((x) => x.slice(0, 800));
+  renderScript();
+};
+$('size').oninput = () => { $('scroll').style.fontSize = $('size').value + 'px'; };
+
+// --- teleprompter ---
+let pos = 0, scrolling = false, raf = 0, last = 0;
+function step(ts) {
+  if (!scrolling) return;
+  if (last) pos += (ts - last) / 1000 * Number($('speed').value);
+  last = ts;
+  const max = $('scroll').scrollHeight - $('prompt').clientHeight * 0.6;
+  if (pos > max) pos = max;
+  $('scroll').style.transform = 'translateY(' + (-pos) + 'px)';
+  raf = requestAnimationFrame(step);
+}
+function startScroll() { scrolling = true; last = 0; raf = requestAnimationFrame(step); }
+function stopScroll() { scrolling = false; cancelAnimationFrame(raf); }
+$('prompt').onclick = () => { if (!rec) return; scrolling ? stopScroll() : startScroll(); };
+
+// --- recording: mic + black 16x16 canvas -> video container accepted by NEIRAM STUDIO ---
+let stream = null, rec = null, chunks = [], t0 = 0, timer = 0, ac = null, an = null, mime = '', ext = '';
+function pickType() {
+  const c = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  for (const t of c) { try { if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) return t; } catch (e) {} }
+  return '';
+}
+function fmt(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function setStatus(msg, cls) { const el = $('status'); el.textContent = msg; el.className = cls ? cls : 'small'; }
+
+async function start() {
+  if (!data.s.length) { setStatus('Ajoute d’abord le texte du script.', 'err'); return; }
+  mime = pickType();
+  if (!mime) { setStatus('Ce navigateur ne sait pas enregistrer. Utilise Safari (iPhone) ou Chrome.', 'err'); return; }
+  ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  try {
+    const mic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: false, noiseSuppression: true, autoGainControl: false, channelCount: 1}});
+    const cv = document.createElement('canvas'); cv.width = 16; cv.height = 16;
+    const cx = cv.getContext('2d'); cx.fillStyle = '#000'; cx.fillRect(0, 0, 16, 16);
+    const vs = cv.captureStream(1);
+    const tick = setInterval(() => { cx.fillRect(0, 0, 16, 16); }, 500);
+    stream = new MediaStream([...vs.getVideoTracks(), ...mic.getAudioTracks()]);
+    stream._tick = tick; stream._mic = mic;
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    an = ac.createAnalyser(); an.fftSize = 512; ac.createMediaStreamSource(mic).connect(an);
+  } catch (e) {
+    setStatus('Micro refusé. Autorise le micro pour ce site (réglages du navigateur), puis réessaie.', 'err'); return;
+  }
+  chunks = [];
+  rec = new MediaRecorder(stream, {mimeType: mime, audioBitsPerSecond: 128000, videoBitsPerSecond: 20000});
+  rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  rec.onstop = finish;
+  // countdown
+  const c = $('count'); c.style.display = 'flex';
+  for (const n of [3, 2, 1]) { c.textContent = n; await new Promise((r) => setTimeout(r, 800)); }
+  c.style.display = 'none';
+  rec.start(1000); t0 = Date.now(); pos = 0; startScroll();
+  $('recBtn').textContent = '■ Terminer'; $('pauseBtn').disabled = false; $('result').hidden = true;
+  setStatus('Enregistrement… Touche le texte pour mettre le défilement en pause.', 'ok');
+  timer = setInterval(() => {
+    const el = (Date.now() - t0) / 1000; $('time').textContent = fmt(el);
+    if (an) { const a = new Uint8Array(an.fftSize); an.getByteTimeDomainData(a); let m = 0; for (const v of a) m = Math.max(m, Math.abs(v - 128)); $('meter').firstChild.style.width = Math.min(100, m / 1.28) + '%'; }
+    if (el > 180) stop();
+  }, 100);
+}
+function stop() {
+  if (rec && rec.state !== 'inactive') rec.stop();
+  stopScroll(); clearInterval(timer);
+}
+function cleanup() {
+  if (stream) { clearInterval(stream._tick); stream.getTracks().forEach((t) => t.stop()); stream._mic && stream._mic.getTracks().forEach((t) => t.stop()); }
+  if (ac) { ac.close().catch(() => {}); }
+  stream = null; ac = null; an = null;
+}
+let blob = null, fileName = '';
+function finish() {
+  cleanup(); rec = null;
+  blob = new Blob(chunks, {type: mime.split(';')[0]});
+  const who = document.querySelector('input[name=who]:checked').value;
+  const base = (data.n ? 'V' + data.n + '_' : '') + (data.id || 'voix').replace(/^v\d+_/i, '');
+  fileName = base + '_voix_' + who + '.' + ext;
+  $('player').src = URL.createObjectURL(blob);
+  $('fname').textContent = fileName; $('fileInfo').textContent = fileName + ' · ' + (blob.size / 1e6).toFixed(1) + ' Mo · ' + $('time').textContent;
+  $('result').hidden = false; $('recBtn').textContent = '● Enregistrer'; $('pauseBtn').disabled = true;
+  if (blob.size > 20e6) setStatus('Fichier trop lourd (> 20 Mo) : refais une prise plus courte.', 'err');
+  else setStatus('Prise terminée. Réécoute, puis enregistre le fichier.', 'ok');
+}
+$('recBtn').onclick = () => { if (rec) stop(); else start(); };
+$('pauseBtn').onclick = () => {
+  if (!rec) return;
+  if (rec.state === 'recording') { rec.pause(); stopScroll(); $('pauseBtn').textContent = '▶ Reprendre'; setStatus('En pause.', 'small'); }
+  else if (rec.state === 'paused') { rec.resume(); startScroll(); $('pauseBtn').textContent = '⏸ Pause'; setStatus('Enregistrement…', 'ok'); }
+};
+$('redo').onclick = () => { $('result').hidden = true; pos = 0; $('scroll').style.transform = 'translateY(0)'; $('time').textContent = '0:00'; setStatus('Prêt pour une nouvelle prise.', 'small'); };
+$('save').onclick = async () => {
+  if (!blob) return;
+  const file = new File([blob], fileName, {type: blob.type});
+  try {
+    if (navigator.canShare && navigator.canShare({files: [file]})) { await navigator.share({files: [file], title: fileName}); setStatus('Fichier prêt : importe-le dans NEIRAM STUDIO.', 'ok'); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = fileName; document.body.appendChild(a); a.click(); a.remove();
+  setStatus('Fichier téléchargé : importe-le dans NEIRAM STUDIO.', 'ok');
+};
+window.addEventListener('beforeunload', (e) => { if (rec) { e.preventDefault(); e.returnValue = ''; } });
+}
+</script>
+</main></body></html>
