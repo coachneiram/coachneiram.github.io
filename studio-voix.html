@@ -15,6 +15,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .brand{font-weight:800;font-size:20px}.brand b{color:var(--y)}
 .small{font-size:14px;color:var(--g)}
 h1{font-size:26px;line-height:1.15;margin:14px 0 6px}
+h1,.card{overflow-wrap:anywhere}
 .card{background:var(--card);border:1px solid #26262a;border-radius:16px;padding:14px;margin-top:14px}
 .who{display:flex;gap:8px;flex-wrap:wrap}
 .who label{flex:1;min-width:120px;border:2px solid #333;border-radius:12px;padding:10px;text-align:center;font-weight:700;cursor:pointer}
@@ -35,7 +36,7 @@ button:disabled{opacity:.4}
 button:focus-visible,.btn:focus-visible{outline:3px solid var(--y);outline-offset:2px}
 #meter{height:8px;background:#222;border-radius:4px;overflow:hidden;flex:1;min-width:120px}#meter i{display:block;height:100%;width:0;background:var(--y)}
 #time{font-variant-numeric:tabular-nums;font-weight:700;min-width:64px}
-input[type=range]{flex:1}
+input[type=range]{flex:1;min-height:40px}
 audio{width:100%;margin-top:10px}
 textarea{width:100%;min-height:160px;background:#000;color:var(--w);border:1px solid #333;border-radius:12px;padding:10px;font:16px system-ui}
 .ok{color:var(--y);font-weight:700}.err{color:var(--r);font-weight:700}
@@ -90,7 +91,7 @@ ol{padding-left:20px;margin:6px 0}
 <script>
 {
 const $ = (id) => document.getElementById(id);
-let data = {id: '', n: '', t: '', s: []};
+let data = {id: '', n: '', t: '', s: []}, hashErr = false;
 // --- read script from the URL hash: #d=<base64url(JSON)> (never sent to any server) ---
 function b64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -101,14 +102,16 @@ function b64urlDecode(str) {
 }
 try {
   const m = location.hash.match(/[#&]d=([A-Za-z0-9_\-]+)/);
-  if (m && m[1].length < 20000) {
+  if (m && m[1].length >= 120000) hashErr = true;
+  if (m && m[1].length < 120000) {
     const o = JSON.parse(b64urlDecode(m[1]));
     data.id = String(o.id || '').replace(/[^a-z0-9_\-]/gi, '').slice(0, 60);
     data.n = String(o.n || '').replace(/[^0-9]/g, '').slice(0, 4);
     data.t = String(o.t || '').slice(0, 140);
     data.s = Array.isArray(o.s) ? o.s.slice(0, 30).map((x) => String(x).slice(0, 800)) : [];
   }
-} catch (e) { data.s = []; }
+} catch (e) { data = {id: '', n: '', t: '', s: []}; hashErr = true; }
+if (!Array.isArray(data.s) || !data.s.length) data.s = [];
 
 function renderScript() {
   const sc = $('scroll'); sc.textContent = '';
@@ -120,8 +123,8 @@ function renderScript() {
   });
   if (data.t) { $('title').textContent = (data.n ? 'V' + data.n + ' · ' : '') + data.t; $('sub').textContent = data.s.length + ' scènes à lire d’un trait.'; }
   $('pasteCard').hidden = data.s.length > 0;
+  if (hashErr && !data.s.length) setStatus('Le lien du script est illisible ou trop long : colle le texte ci-dessus.', 'err');
 }
-renderScript();
 $('usePaste').onclick = () => {
   data.s = $('paste').value.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean).slice(0, 30).map((x) => x.slice(0, 800));
   renderScript();
@@ -152,14 +155,21 @@ function pickType() {
 }
 function fmt(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function setStatus(msg, cls) { const el = $('status'); el.textContent = msg; el.className = cls ? cls : 'small'; }
+renderScript();
 
+let starting = false, pausedMs = 0, pausedAt = 0;
+function elapsed() { return (Date.now() - t0 - pausedMs - (pausedAt ? Date.now() - pausedAt : 0)) / 1000; }
 async function start() {
+  if (starting) return;
   if (!data.s.length) { setStatus('Ajoute d’abord le texte du script.', 'err'); return; }
   mime = pickType();
-  if (!mime) { setStatus('Ce navigateur ne sait pas enregistrer. Utilise Safari (iPhone) ou Chrome.', 'err'); return; }
+  if (!mime || !HTMLCanvasElement.prototype.captureStream) { setStatus('Ce navigateur ne sait pas enregistrer. Utilise Safari (iPhone) ou Chrome.', 'err'); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { setStatus('Micro indisponible ici : ouvre cette page dans Safari ou Chrome (pas dans une appli comme Instagram).', 'err'); return; }
   ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  starting = true; $('recBtn').disabled = true;
+  let mic = null;
   try {
-    const mic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: false, noiseSuppression: true, autoGainControl: false, channelCount: 1}});
+    mic = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: false, noiseSuppression: true, autoGainControl: false, channelCount: 1}});
     const cv = document.createElement('canvas'); cv.width = 16; cv.height = 16;
     const cx = cv.getContext('2d'); cx.fillStyle = '#000'; cx.fillRect(0, 0, 16, 16);
     const vs = cv.captureStream(1);
@@ -168,22 +178,30 @@ async function start() {
     stream._tick = tick; stream._mic = mic;
     ac = new (window.AudioContext || window.webkitAudioContext)();
     an = ac.createAnalyser(); an.fftSize = 512; ac.createMediaStreamSource(mic).connect(an);
+    if (ac.state === 'suspended') ac.resume().catch(() => {});
+    chunks = [];
+    rec = new MediaRecorder(stream, {mimeType: mime, audioBitsPerSecond: 128000, videoBitsPerSecond: 20000});
   } catch (e) {
-    setStatus('Micro refusé. Autorise le micro pour ce site (réglages du navigateur), puis réessaie.', 'err'); return;
+    if (!stream && mic) mic.getTracks().forEach((t) => t.stop());
+    cleanup(); rec = null; starting = false; $('recBtn').disabled = false;
+    const n = e && e.name;
+    setStatus(n === 'NotAllowedError' || n === 'SecurityError' ? 'Micro refusé. Autorise le micro pour ce site (réglages du navigateur), puis réessaie.' : n === 'NotFoundError' || n === 'OverconstrainedError' ? 'Aucun micro trouvé sur cet appareil.' : n === 'NotReadableError' ? 'Le micro est déjà utilisé par une autre appli : ferme-la puis réessaie.' : 'Enregistrement impossible sur ce navigateur. Utilise Safari (iPhone) ou Chrome.', 'err');
+    return;
   }
-  chunks = [];
-  rec = new MediaRecorder(stream, {mimeType: mime, audioBitsPerSecond: 128000, videoBitsPerSecond: 20000});
   rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
   rec.onstop = finish;
+  rec.onerror = () => { setStatus('Erreur d’enregistrement : refais une prise.', 'err'); stop(); };
   // countdown
   const c = $('count'); c.style.display = 'flex';
   for (const n of [3, 2, 1]) { c.textContent = n; await new Promise((r) => setTimeout(r, 800)); }
   c.style.display = 'none';
-  rec.start(1000); t0 = Date.now(); pos = 0; startScroll();
+  try { rec.start(1000); } catch (e) { cleanup(); rec = null; starting = false; $('recBtn').disabled = false; setStatus('Enregistrement impossible sur ce navigateur. Utilise Safari (iPhone) ou Chrome.', 'err'); return; }
+  starting = false; $('recBtn').disabled = false;
+  t0 = Date.now(); pausedMs = 0; pausedAt = 0; pos = 0; startScroll();
   $('recBtn').textContent = '■ Terminer'; $('pauseBtn').disabled = false; $('result').hidden = true;
   setStatus('Enregistrement… Touche le texte pour mettre le défilement en pause.', 'ok');
   timer = setInterval(() => {
-    const el = (Date.now() - t0) / 1000; $('time').textContent = fmt(el);
+    const el = elapsed(); $('time').textContent = fmt(el);
     if (an) { const a = new Uint8Array(an.fftSize); an.getByteTimeDomainData(a); let m = 0; for (const v of a) m = Math.max(m, Math.abs(v - 128)); $('meter').firstChild.style.width = Math.min(100, m / 1.28) + '%'; }
     if (el > 180) stop();
   }, 100);
@@ -199,22 +217,24 @@ function cleanup() {
 }
 let blob = null, fileName = '';
 function finish() {
-  cleanup(); rec = null;
+  cleanup(); rec = null; pausedAt = 0;
   blob = new Blob(chunks, {type: mime.split(';')[0]});
+  if (!blob.size) { blob = null; $('recBtn').textContent = '● Enregistrer'; $('pauseBtn').disabled = true; setStatus('Rien n’a été enregistré : réessaie.', 'err'); return; }
   const who = document.querySelector('input[name=who]:checked').value;
   const base = (data.n ? 'V' + data.n + '_' : '') + (data.id || 'voix').replace(/^v\d+_/i, '');
   fileName = base + '_voix_' + who + '.' + ext;
+  if ($('player').src.startsWith('blob:')) URL.revokeObjectURL($('player').src);
   $('player').src = URL.createObjectURL(blob);
   $('fname').textContent = fileName; $('fileInfo').textContent = fileName + ' · ' + (blob.size / 1e6).toFixed(1) + ' Mo · ' + $('time').textContent;
-  $('result').hidden = false; $('recBtn').textContent = '● Enregistrer'; $('pauseBtn').disabled = true;
+  $('result').hidden = false; $('recBtn').textContent = '● Enregistrer'; $('pauseBtn').disabled = true; $('pauseBtn').textContent = '⏸ Pause';
   if (blob.size > 20e6) setStatus('Fichier trop lourd (> 20 Mo) : refais une prise plus courte.', 'err');
   else setStatus('Prise terminée. Réécoute, puis enregistre le fichier.', 'ok');
 }
-$('recBtn').onclick = () => { if (rec) stop(); else start(); };
+$('recBtn').onclick = () => { if (starting) return; if (rec) stop(); else start(); };
 $('pauseBtn').onclick = () => {
   if (!rec) return;
-  if (rec.state === 'recording') { rec.pause(); stopScroll(); $('pauseBtn').textContent = '▶ Reprendre'; setStatus('En pause.', 'small'); }
-  else if (rec.state === 'paused') { rec.resume(); startScroll(); $('pauseBtn').textContent = '⏸ Pause'; setStatus('Enregistrement…', 'ok'); }
+  if (rec.state === 'recording') { rec.pause(); pausedAt = Date.now(); stopScroll(); $('pauseBtn').textContent = '▶ Reprendre'; setStatus('En pause.', 'small'); }
+  else if (rec.state === 'paused') { rec.resume(); if (pausedAt) { pausedMs += Date.now() - pausedAt; pausedAt = 0; } startScroll(); $('pauseBtn').textContent = '⏸ Pause'; setStatus('Enregistrement…', 'ok'); }
 };
 $('redo').onclick = () => { $('result').hidden = true; pos = 0; $('scroll').style.transform = 'translateY(0)'; $('time').textContent = '0:00'; setStatus('Prêt pour une nouvelle prise.', 'small'); };
 $('save').onclick = async () => {
@@ -224,6 +244,7 @@ $('save').onclick = async () => {
     if (navigator.canShare && navigator.canShare({files: [file]})) { await navigator.share({files: [file], title: fileName}); setStatus('Fichier prêt : importe-le dans NEIRAM STUDIO.', 'ok'); return; }
   } catch (e) { if (e && e.name === 'AbortError') return; }
   const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = fileName; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
   setStatus('Fichier téléchargé : importe-le dans NEIRAM STUDIO.', 'ok');
 };
 window.addEventListener('beforeunload', (e) => { if (rec) { e.preventDefault(); e.returnValue = ''; } });
